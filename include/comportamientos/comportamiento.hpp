@@ -5,8 +5,10 @@
 
 using namespace std;
 
+
 enum Orientacion {norte, noreste, este, sureste, sur, suroeste, oeste, noroeste};
 enum Action {actWALK, actRUN, actTURN_L, actTURN_SR, actWHEREIS, act_CLB_WALK, act_CLB_TURN_SR, act_CLB_STOP, actIDLE};
+
 
 struct ubicacion{
     int f;
@@ -17,6 +19,7 @@ struct ubicacion{
       return (f == ub.f and c == ub.c and brujula == ub.brujula);
     }    
 };
+
 
 struct Sensores {
   int nivel;
@@ -40,10 +43,11 @@ struct Sensores {
 };
 
 
-
 class Comportamiento {
+ 
   public:
-    vector< vector< unsigned char> > mapaResultado;
+
+    vector< vector< unsigned char> > mapaResultado; // EN NIVELES 0,1,2,3: variable solo lectura | EN NIVEL 4: variable de escritura
     vector< vector< unsigned char> > mapaEntidades;
     std::vector< std::vector<unsigned char> > mapaConPlan;
 
@@ -60,7 +64,6 @@ class Comportamiento {
     vector< vector< unsigned char> > getMapaResultado(){return mapaResultado;}
     vector< vector< unsigned char> > getMapaEntidades(){return mapaEntidades;}
     vector< vector< unsigned char> > getMapaPlan(){return mapaConPlan;}
-
 };
 
 #endif

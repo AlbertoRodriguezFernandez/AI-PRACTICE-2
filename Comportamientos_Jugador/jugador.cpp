@@ -6,14 +6,29 @@
 #include <set>
 #include <stack>
 
-// Este es el método principal que se piden en la practica.
-// Tiene como entrada la información de los sensores y devuelve la acción a realizar.
-// Para ver los distintos sensores mirar fichero "comportamiento.hpp"
+
+// Este es el método principal que se piden en la practica. Tiene como entrada la información de los sensores y devuelve la acción a realizar.
 Action ComportamientoJugador::think(Sensores sensores)
 {
 	Action accion = actIDLE;
 
-	// Incluir aquí el comportamiento del agente jugador
+	if (plan.size() == 0) {
+
+		hayPlan = false;
+	}
+
+	if (!hayPlan) {
+
+		// Método de búsqueda
+		hayPlan = true;
+	}
+
+	if (hayPlan and plan.size() > 0) {
+
+		accion = plan.front(); // La accion corresponde al primer elemento de la lista
+		plan.pop_front(); // Sacar el primer elemento de la lista de acciones plan
+	}
+
 
 	return accion;
 }
