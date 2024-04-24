@@ -509,6 +509,15 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 			
 	}
 
+	// Si ha encontrado solución guardar secuencia y pintarlo
+	if (SolutionFound) {
+
+		plan = current_node.secuencia;
+
+		cout << "Encontrado un plan" << endl;
+		PintaPlan(plan);
+	}
+
 	return plan;
 }
 
