@@ -6,6 +6,29 @@
 #include <list>
 
 
+// Estado del nivel 0
+struct stateN0{
+
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador;
+
+  bool operator==(const stateN0 &x) const {
+
+    // Uso operator== de la estruct ubicacion 
+    if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c) {
+
+      return true;
+    
+    } else {
+
+      return false;
+    }
+  }
+};
+
+
+// Clase ComportamientoJugador
 class ComportamientoJugador : public Comportamiento {
   
   public:
@@ -19,8 +42,12 @@ class ComportamientoJugador : public Comportamiento {
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) {
       
       // Inicializar Variables de Estado
-      // plan = ...;
+      
+      // TODO 
+      //plan = ...;
       hayPlan = false;
+      //c_state = ...;
+      //goal = ...;
       
 
     }
@@ -30,6 +57,8 @@ class ComportamientoJugador : public Comportamiento {
 
       plan = comport.plan;
       hayPlan = comport.hayPlan;
+      c_state = comport.c_state;
+      goal = comport.goal;
     }
     
     // DESTRUCTOR
@@ -45,10 +74,8 @@ class ComportamientoJugador : public Comportamiento {
     // Declarar Variables de Estado
     list<Action> plan; // Almacena el plan en ejecución
     bool hayPlan;      // Si se esta siguiendo o no un plan
-
-
-
-
+    stateN0 c_state;   // Estado actual
+		ubicacion goal;    // Ubicación de casilla objetivo  
 
 };
 

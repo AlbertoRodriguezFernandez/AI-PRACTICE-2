@@ -10,7 +10,9 @@ enum Orientacion {norte, noreste, este, sureste, sur, suroeste, oeste, noroeste}
 enum Action {actWALK, actRUN, actTURN_L, actTURN_SR, actWHEREIS, act_CLB_WALK, act_CLB_TURN_SR, act_CLB_STOP, actIDLE};
 
 
+// Estructura que trata de almacenar la ubicación del agente jugador y agente colaborador
 struct ubicacion{
+    
     int f;
     int c;
     Orientacion brujula;
