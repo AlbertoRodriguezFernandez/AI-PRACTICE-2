@@ -409,7 +409,7 @@ bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vec
 }
 
 
-// Búsqueda en anchura2
+// Búsqueda en anchura 2
 list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
@@ -418,10 +418,10 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 	list<Action> plan;
 
 	current_node.st = inicio;
-	abiertos.push_back(current_node);
-
+	
 	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
 
+	abiertos.push_back(current_node);
 
 	// Proceso de búsqueda
 	while (!abiertos.empty() and !SolutionFound) {
@@ -490,7 +490,7 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 			
 			// Generar hijo actTURN_SR
 			nodeN0 child_turnsr = current_node;
-			child_turnl.st = apply(actTURN_SR, current_node.st, mapa);
+			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
 			
 			// Guardar accion en secuencia
 			child_turnsr.secuencia.push_back(actTURN_SR);
@@ -522,6 +522,130 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 }
 
 
+// Búsqueda en anchura 3
+list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+
+	nodeN0 current_node;
+	list<nodeN0> abiertos; // frontier
+	set<nodeN0> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
+	list<Action> plan;
+
+	current_node.st = inicio;
+	abiertos.push_back(current_node);
+
+	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
+
+	// Proceso de búsqueda
+	while (!abiertos.empty() and !SolutionFound) {
+
+		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
+		abiertos.pop_front();
+		cerrados.insert(current_node);
+
+		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+
+		// Generar hijo actWALK
+		nodeN0 child_walk = current_node; 
+		child_walk.st = apply(actWALK, current_node.st, mapa);
+		
+		// Guardar la accion en secuencia
+		child_walk.secuencia.push_back(actWALK);
+
+		// Si el nodo hijo tras andar es solución, se guarda en estado actual
+		if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+			
+			current_node = child_walk;
+			SolutionFound = true;
+		
+		// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+		} else if (cerrados.find(child_walk) == cerrados.end()){
+			
+			abiertos.push_back(child_walk);
+		}
+
+		// Condición para que no se generen estados hijos si ya se encontro la solucion
+		if (!SolutionFound){
+			
+			// Generar hijo actRUN
+			nodeN0 child_run = current_node;
+			child_run.st = apply(actRUN, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_run.secuencia.push_back(actRUN);
+
+			if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+				
+				current_node = child_run;
+				SolutionFound = true;
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			} else if (cerrados.find(child_run) == cerrados.end()){
+				
+				abiertos.push_back(child_run);
+			}
+		}
+
+		// Condición para que no se generen estados hijos si ya se encontro la solucion
+		// Aqui no se incluye la actualización de current_state, porque sin moverte no se puede alcanzar la casilla destino
+		if (!SolutionFound){
+			
+			// Generar hijo actTURN_L
+			nodeN0 child_turnl = current_node; 
+			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
+
+			// Guardar accion en secuencia
+			child_turnl.secuencia.push_back(actTURN_L);
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnl) == cerrados.end()){
+				
+				abiertos.push_back(child_turnl);
+			}		
+			
+			// Generar hijo actTURN_SR
+			nodeN0 child_turnsr = current_node;
+			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_turnsr.secuencia.push_back(actTURN_SR);
+
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnsr) == cerrados.end()){
+				
+				abiertos.push_back(child_turnsr);
+			}		
+		}
+
+		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+		if (!SolutionFound and !abiertos.empty()) {
+
+			current_node = abiertos.front();
+
+			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+
+				abiertos.pop_front();
+
+				if (!abiertos.empty()) {
+
+					current_node = abiertos.front();
+				}
+			}
+		}
+	}
+
+	// Si ha encontrado solución guardar secuencia y pintarlo
+	if (SolutionFound) {
+
+		plan = current_node.secuencia;
+
+		cout << "Encontrado un plan" << endl;
+		PintaPlan(plan);
+	}
+
+	return plan;
+}
+
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCIÓN THINK
 
@@ -531,45 +655,93 @@ Action ComportamientoJugador::think(Sensores sensores)
 {
 	Action accion = actIDLE;
 
-	if (plan.size() == 0) {
+	// Niveles 0,1,2,3
+	if (sensores.nivel != 4) {
 
-		cout << "Se completo el plan" << endl;
-		hayPlan = false;
-	}
+		if (!hayPlan) {
 
-	if (!hayPlan) {
+			// Método de búsqueda
+			cout << "Calculamos nuevo plan" << endl;
+			c_state.jugador.f = sensores.posF;
+			c_state.jugador.c = sensores.posC;
+			c_state.jugador.brujula = sensores.sentido;
+			c_state.colaborador.f = sensores.CLBposF;
+			c_state.colaborador.c = sensores.CLBposC;
+			c_state.colaborador.brujula = sensores.CLBsentido;
+			goal.f = sensores.destinoF;
+			goal.c = sensores.destinoC;
 
-		// Método de búsqueda
-		cout << "Calculamos nuevo plan" << endl;
-		c_state.jugador.f = sensores.posF;
-		c_state.jugador.c = sensores.posC;
-		c_state.jugador.brujula = sensores.sentido;
-		c_state.colaborador.f = sensores.CLBposF;
-		c_state.colaborador.c = sensores.CLBposC;
-		c_state.colaborador.brujula = sensores.CLBsentido;
-		goal.f = sensores.destinoF;
-		goal.c = sensores.destinoC;
 
-		/*
-		hayPlan = AnchuraSoloJugador(c_state, goal, mapaResultado);
+			switch (sensores.nivel)
+			{
+				case 0: plan = AnchuraSoloJugador_V3(c_state, goal, mapaResultado);
+						break;
 
-		if (hayPlan) {
+				case 1: cout << "Pendiente 1" << endl;
+						break;
 
-			cout << "Se encontro un plan" << endl;
+				case 2: cout << "Pendiente 2" << endl;
+						break;
+
+				case 3: cout << "Pendiente 3" << endl;
+						break;
+
+				case 4: cout << "Pendiente 4" << endl;
+						break;
+			}
+
+			/* 
+			VERSION 1 TUTORIAL
+
+			hayPlan = AnchuraSoloJugador(c_state, goal, mapaResultado);
+
+			if (hayPlan) {
+
+				cout << "Se encontro un plan" << endl;
+			}
+			*/
+
+			/*
+			VERSION 2 TUTORIAL
+
+			plan = AnchuraSoloJugador_V2(c_state, goal, mapaResultado);
+			VisualizaPlan(c_state,plan);
+			hayPlan = true;
+			*/
+
+			/*
+			VERSION 3 TUTORIAL
+
+			plan = AnchuraSoloJugador_V3(c_state, goal, mapaResultado);
+			VisualizaPlan(c_state,plan);
+			hayPlan = true;
+			*/
+
+			if (plan.size() > 0) {
+
+				VisualizaPlan(c_state, plan);
+				hayPlan = true;
+			}
+			
 		}
-		*/
 
-		plan = AnchuraSoloJugador_V2(c_state, goal, mapaResultado);
-		VisualizaPlan(c_state,plan);
-		hayPlan = true;
+		if (hayPlan and plan.size() > 0) {
+
+			accion = plan.front(); // La accion corresponde al primer elemento de la lista
+			plan.pop_front(); // Sacar el primer elemento de la lista de acciones plan
+		}
+
+		if (plan.size() == 0) {
+
+			cout << "Se completo el plan" << endl;
+			hayPlan = false;
+		}
+
+	// Nivel 4
+	} else {
+
+		cout << "Nivel 4" << endl;
 	}
-
-	if (hayPlan and plan.size() > 0) {
-
-		accion = plan.front(); // La accion corresponde al primer elemento de la lista
-		plan.pop_front(); // Sacar el primer elemento de la lista de acciones plan
-	}
-
 
 	return accion;
 }
