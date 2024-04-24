@@ -11,11 +11,11 @@ struct stateN0{
 
   ubicacion jugador;
   ubicacion colaborador;
-  Action ultimaOrdenColaborador;
+  Action ultimaOrdenColaborador; // ultima acción que el jugador ordeno al colaborador. Si el jugador no indica nueva acción seguirá haciendo esta última
 
   bool operator==(const stateN0 &x) const {
 
-    // Uso operator== de la estruct ubicacion 
+    // Uso operator== de la struct ubicacion 
     if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c) {
 
       return true;
@@ -28,15 +28,36 @@ struct stateN0{
 };
 
 
+// Nodo del nivel 0: almacenar en cada nodo la secuencia de acciones hasta el momento
+struct nodeN0{
+ 
+  stateN0 st; // Estado actual
+  list<Action> secuencia; // Secuencia de acciones
+
+  bool operator==(const nodeN0 &n) const {
+    
+    return (st == n.st);
+  }
+
+  bool operator<(const nodeN0 &b)  const {
+    
+    // TODO: tener en cuenta al colaborador en niveles posteriores
+    return  (st.jugador.f < b.st.jugador.f) || (st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c) || (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula);
+  }
+};
+
+
 // Clase ComportamientoJugador
 class ComportamientoJugador : public Comportamiento {
   
   public:
 
+
     // NIVEL 4
     ComportamientoJugador(unsigned int size) : Comportamiento(size) {
       // Inicializar Variables de Estado
     }
+
 
     // NIVELES 0,1,2,3
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) {
@@ -52,6 +73,7 @@ class ComportamientoJugador : public Comportamiento {
 
     }
 
+
     // CONSTRUCTOR DE COPIA
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){ 
 
@@ -61,12 +83,17 @@ class ComportamientoJugador : public Comportamiento {
       goal = comport.goal;
     }
     
+
     // DESTRUCTOR
     ~ComportamientoJugador(){}
 
-    // MÉTODO A IMPLEMENTAR
-    Action think(Sensores sensores);
+
     int interact(Action accion, int valor);
+
+
+    // FUNCIONES A IMPLEMENTAR / UTILIZAR
+    void VisualizaPlan(const stateN0 &st, const list<Action> &plan);
+    Action think(Sensores sensores);
 
 
   private:
