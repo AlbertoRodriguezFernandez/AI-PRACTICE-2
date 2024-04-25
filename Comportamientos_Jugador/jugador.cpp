@@ -80,7 +80,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 	stateN0 st_result = st;
 	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
 	
-	//TODO: en niveles posteriores habra que tener en cuenta al agente colaborador
+	// En niveles posteriores habra que tener en cuenta al agente colaborador
 
 	switch (a)
 	{
@@ -99,7 +99,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 
 		case act_CLB_TURN_SR:   
 
-			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula+1)%8);
+			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
 			break;
 
 
@@ -748,197 +748,105 @@ bool VeoColaborador(const stateN0 &st, const vector<vector<unsigned char>> &mapa
 
 			case 3:
 
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-
-				/*
-				mapaResultado[current_state.fil    ][current_state.col + 1] = terreno[1];
-				mapaResultado[current_state.fil + 1][current_state.col + 1] = terreno[2];
-				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[3];
-				mapaResultado[current_state.fil    ][current_state.col + 2] = terreno[4];
-				mapaResultado[current_state.fil + 1][current_state.col + 2] = terreno[5];
-				mapaResultado[current_state.fil + 2][current_state.col + 2] = terreno[6];
-				mapaResultado[current_state.fil + 2][current_state.col + 1] = terreno[7];
-				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[8];
-				mapaResultado[current_state.fil    ][current_state.col + 3] = terreno[9];
-				mapaResultado[current_state.fil + 1][current_state.col + 3] = terreno[10];
-				mapaResultado[current_state.fil + 2][current_state.col + 3] = terreno[11];
-				mapaResultado[current_state.fil + 3][current_state.col + 3] = terreno[12];
-				mapaResultado[current_state.fil + 2][current_state.col + 3] = terreno[13];
-				mapaResultado[current_state.fil + 1][current_state.col + 3] = terreno[14];
-				mapaResultado[current_state.fil    ][current_state.col + 3] = terreno[15];
-				*/
+				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
 
 				break;
 
 			case 4:
 
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-
-				/*
-				mapaResultado[current_state.fil + 1][current_state.col + 1] = terreno[1];
-				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[2];
-				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[3];
-				mapaResultado[current_state.fil + 2][current_state.col + 2] = terreno[4];
-				mapaResultado[current_state.fil + 2][current_state.col + 1] = terreno[5];
-				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[6];
-				mapaResultado[current_state.fil + 2][current_state.col - 1] = terreno[7];
-				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[8];
-				mapaResultado[current_state.fil + 3][current_state.col + 3] = terreno[9];
-				mapaResultado[current_state.fil + 3][current_state.col + 2] = terreno[10];
-				mapaResultado[current_state.fil + 3][current_state.col + 1] = terreno[11];
-				mapaResultado[current_state.fil + 3][current_state.col    ] = terreno[12];
-				mapaResultado[current_state.fil + 3][current_state.col - 1] = terreno[13];
-				mapaResultado[current_state.fil + 3][current_state.col - 2] = terreno[14];
-				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[15];
-				*/
+				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
 
 				break;
 
 			case 5:
 
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-
-				/*
-				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[1];
-				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[2];
-				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[3];
-				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[4];
-				mapaResultado[current_state.fil + 2][current_state.col - 1] = terreno[5];
-				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[6];
-				mapaResultado[current_state.fil + 1][current_state.col - 2] = terreno[7];
-				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[8];
-				mapaResultado[current_state.fil + 3][current_state.col    ] = terreno[9];
-				mapaResultado[current_state.fil + 3][current_state.col - 1] = terreno[10];
-				mapaResultado[current_state.fil + 3][current_state.col - 2] = terreno[11];
-				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[12];
-				mapaResultado[current_state.fil + 2][current_state.col - 3] = terreno[13];
-				mapaResultado[current_state.fil + 1][current_state.col - 3] = terreno[14];
-				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[15];
-				*/
+				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
 
 				break;
 
 			case 6:
 
+				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-
-				/*
-				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[1];
-				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[2];
-				mapaResultado[current_state.fil - 1][current_state.col - 1] = terreno[3];
-				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[4];
-				mapaResultado[current_state.fil + 1][current_state.col - 2] = terreno[5];
-				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[6];
-				mapaResultado[current_state.fil - 1][current_state.col - 2] = terreno[7];
-				mapaResultado[current_state.fil - 2][current_state.col - 2] = terreno[8];
-				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[9];
-				mapaResultado[current_state.fil + 2][current_state.col - 3] = terreno[10];
-				mapaResultado[current_state.fil + 1][current_state.col - 3] = terreno[11];
-				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[12];
-				mapaResultado[current_state.fil - 1][current_state.col - 3] = terreno[13];
-				mapaResultado[current_state.fil - 2][current_state.col - 3] = terreno[14];
-				mapaResultado[current_state.fil - 3][current_state.col - 3] = terreno[15];
-				*/
 
 				break;
 
 			case 7:
 
+				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
 				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-
-				/*
-				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[1];
-				mapaResultado[current_state.fil - 1][current_state.col - 1] = terreno[2];
-				mapaResultado[current_state.fil - 1][current_state.col    ] = terreno[3];
-				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[4];
-				mapaResultado[current_state.fil - 1][current_state.col - 2] = terreno[5];
-				mapaResultado[current_state.fil - 2][current_state.col - 2] = terreno[6];
-				mapaResultado[current_state.fil - 2][current_state.col - 1] = terreno[7];
-				mapaResultado[current_state.fil - 2][current_state.col    ] = terreno[8];
-				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[9];
-				mapaResultado[current_state.fil - 1][current_state.col - 3] = terreno[10];
-				mapaResultado[current_state.fil - 2][current_state.col - 3] = terreno[11];
-				mapaResultado[current_state.fil - 3][current_state.col - 3] = terreno[12];
-				mapaResultado[current_state.fil - 3][current_state.col - 2] = terreno[13];
-				mapaResultado[current_state.fil - 3][current_state.col - 1] = terreno[14];
-				mapaResultado[current_state.fil - 3][current_state.col    ] = terreno[15];
-				*/
+				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
 
 				break;
 		}
 	}
-
-	
 
 	return veocolaborador;
 }
@@ -970,6 +878,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			Si jugador ve a colaborador, el numero de nodos descendientes aumentara		
 
 				* Funcion que te diga si ve al colaborador o no
+				* Modificar la estructura estado y nodo con respecto ultima accion colaborador
 				* Modificar la función apply porque tenemos mas opciones
 				* Modificar el operator <
 		*/
@@ -1013,9 +922,22 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 				}
 			}
 
-			// TODO: posibilidad de generar hijo act_CLB_STOP
+			//Generar hijo act_CLB_STOP
+			if (!SolutionFound) {
 
+				// Generar hijo act_CLB_TURN_SR
+				nodeN0 child_clb_stop= current_node;
+				child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_clb_stop.secuencia.push_back(act_CLB_STOP);
 
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_stop) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_stop);
+				}
+			}
 
 		}
 

@@ -6,7 +6,7 @@
 #include <list>
 
 
-// Estado del nivel 0
+// Estado  
 struct stateN0{
 
   ubicacion jugador;
@@ -16,7 +16,7 @@ struct stateN0{
   bool operator==(const stateN0 &x) const {
 
     // Uso operator== de la struct ubicacion 
-    if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c) {
+    if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c and ultimaOrdenColaborador == x.ultimaOrdenColaborador) {
 
       return true;
     
@@ -28,7 +28,7 @@ struct stateN0{
 };
 
 
-// Nodo del nivel 0: almacenar en cada nodo la secuencia de acciones hasta el momento
+// Nodo: almacenar en cada nodo la secuencia de acciones hasta el momento
 struct nodeN0{
  
   stateN0 st; // Estado actual
@@ -47,7 +47,8 @@ struct nodeN0{
             (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula) ||
             (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f < b.st.colaborador.f) ||
             (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c < b.st.colaborador.c) ||
-            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula);
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula) ||
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula == b.st.colaborador.brujula and st.ultimaOrdenColaborador < b.st.ultimaOrdenColaborador);
   }
 };
 
