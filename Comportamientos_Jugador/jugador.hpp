@@ -74,8 +74,7 @@ class ComportamientoJugador : public Comportamiento {
       hayPlan = false;
       //c_state = Inicializado en el metodo think;
       //goal = Inicializado en el metodo think;
-      
-
+    
     }
 
 

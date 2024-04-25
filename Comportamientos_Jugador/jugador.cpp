@@ -89,7 +89,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 		
 			sig_ubicacion = NextCasilla(st.colaborador);
 
-			if (CasillaTransitable(sig_ubicacion, mapa)) {
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.jugador.f and sig_ubicacion.c == st.jugador.c)) {
 
 				st_result.colaborador = sig_ubicacion;
 			}
@@ -100,12 +100,6 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 		case act_CLB_TURN_SR:   
 
 			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
-			break;
-
-
-		case act_CLB_STOP:   
-		
-			// TODO: pensar que pasa si la acción del colaborador es parar
 			break;
 
 
@@ -349,7 +343,7 @@ bool Find(const stateN0 &item, const list<nodeN0> &lista){
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCIÓN DE MÉTODO DE BUSQUEDA
 
-/*
+
 // VERSION 1 TUTORIAL --> Búsqueda en anchura
 bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
@@ -546,7 +540,7 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 
 	return plan;
 }
-*/
+
 
 // VERSIÓN DEFINITIVA TUTORIAL --> Búsqueda en anchura 3
 list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
@@ -675,7 +669,7 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // NIVEL 1
 
-// TODO
+// Función para ver al colaborador
 bool VeoColaborador(const stateN0 &st, const vector<vector<unsigned char>> &mapa) {
 
 	bool veocolaborador = false;
@@ -921,26 +915,23 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 					abiertos.push_back(child_clb_turnsr);
 				}
 			}
-
-			//Generar hijo act_CLB_STOP
-			if (!SolutionFound) {
-
-				// Generar hijo act_CLB_TURN_SR
-				nodeN0 child_clb_stop= current_node;
-				child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
-				
-				// Guardar accion en secuencia
-				child_clb_stop.secuencia.push_back(act_CLB_STOP);
-
-				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-				if (cerrados.find(child_clb_stop) == cerrados.end()){
-					
-					abiertos.push_back(child_clb_stop);
-				}
-			}
-
 		}
 
+		//Generar hijo act_CLB_STOP si no hay solución o si el colaborador ando o giro
+		if (!SolutionFound || inicio.ultimaOrdenColaborador == act_CLB_WALK || inicio.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+			// Generar hijo act_CLB_STOP
+			nodeN0 child_clb_stop= current_node;
+			
+			// Guardar accion en secuencia
+			child_clb_stop.secuencia.push_back(act_CLB_STOP);
+
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_clb_stop) == cerrados.end()){
+				
+				abiertos.push_back(child_clb_stop);
+			}
+		}
 
 		// Condición para que no se generen estados hijos si ya se encontro la solucion
 		if (!SolutionFound) {
@@ -1064,6 +1055,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 			// Método de búsqueda
 			cout << "Calculamos nuevo plan" << endl;
+			
 			c_state.jugador.f = sensores.posF;
 			c_state.jugador.c = sensores.posC;
 			c_state.jugador.brujula = sensores.sentido;
@@ -1091,33 +1083,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 				case 4: cout << "Pendiente 4" << endl;
 						break;
 			}
-
-			/* 
-			VERSION 1 TUTORIAL
-
-			hayPlan = AnchuraSoloJugador(c_state, goal, mapaResultado);
-
-			if (hayPlan) {
-
-				cout << "Se encontro un plan" << endl;
-			}
-			*/
-
-			/*
-			VERSION 2 TUTORIAL
-
-			plan = AnchuraSoloJugador_V2(c_state, goal, mapaResultado);
-			VisualizaPlan(c_state,plan);
-			hayPlan = true;
-			*/
-
-			/*
-			VERSION 3 TUTORIAL
-
-			plan = AnchuraSoloJugador_V3(c_state, goal, mapaResultado);
-			VisualizaPlan(c_state,plan);
-			hayPlan = true;
-			*/
 
 			if (plan.size() > 0) {
 
