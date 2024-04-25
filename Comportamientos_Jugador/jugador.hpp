@@ -41,8 +41,13 @@ struct nodeN0{
 
   bool operator<(const nodeN0 &b)  const {
     
-    // TODO: tener en cuenta al colaborador en niveles posteriores
-    return  (st.jugador.f < b.st.jugador.f) || (st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c) || (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula);
+    // Tener en cuenta al colaborador en niveles posteriores
+    return  (st.jugador.f < b.st.jugador.f) || 
+            (st.jugador.f == b.st.jugador.f and st.jugador.c < b.st.jugador.c) || 
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula < b.st.jugador.brujula) ||
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f < b.st.colaborador.f) ||
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c < b.st.colaborador.c) ||
+            (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula);
   }
 };
 
@@ -53,22 +58,21 @@ class ComportamientoJugador : public Comportamiento {
   public:
 
 
-    // NIVEL 4
+    // CONSTRUCTOR NIVEL 4
     ComportamientoJugador(unsigned int size) : Comportamiento(size) {
       // Inicializar Variables de Estado
     }
 
 
-    // NIVELES 0,1,2,3
+    // CONSTRUCTOR NIVELES 0,1,2,3
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) {
       
       // Inicializar Variables de Estado
       
-      // TODO 
-      //plan = ...;
+      //plan = Inicializado en el metodo think;
       hayPlan = false;
-      //c_state = ...;
-      //goal = ...;
+      //c_state = Inicializado en el metodo think;
+      //goal = Inicializado en el metodo think;
       
 
     }
@@ -84,10 +88,11 @@ class ComportamientoJugador : public Comportamiento {
     }
     
 
-    // DESTRUCTOR
+    // DESTRUCTOR --> Al no contar con memoria dinamica nos sirve el destructor por defecto
     ~ComportamientoJugador(){}
 
 
+    // MÉTODO INTERACT --> No se implementa
     int interact(Action accion, int valor);
 
 

@@ -84,44 +84,70 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 
 	switch (a)
 	{
-	
-	case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
-		
-		sig_ubicacion = NextCasilla(st.jugador);
-		
-		if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-				
-				st_result.jugador = sig_ubicacion;
-		}
-		
-		break;
-	
-	case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
-		
-		sig_ubicacion = NextCasilla(st.jugador);
-		
-		if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
 
-			sig_ubicacion2 = NextCasilla(sig_ubicacion);
+		case act_CLB_WALK:    
+		
+			sig_ubicacion = NextCasilla(st.colaborador);
 
-			if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
-					
-				st_result.jugador = sig_ubicacion2;
+			if (CasillaTransitable(sig_ubicacion, mapa)) {
+
+				st_result.colaborador = sig_ubicacion;
 			}
-		}		
+
+			break;
+
+
+		case act_CLB_TURN_SR:   
+
+			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula+1)%8);
+			break;
+
+
+		case act_CLB_STOP:   
+		
+			// TODO: pensar que pasa si la acción del colaborador es parar
+			break;
+
+
+		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
 			
-		break;
-
-	// En el caso de los giros solo tendremos que cambiar la orientacion del jugador
-	case actTURN_L:
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+					
+					st_result.jugador = sig_ubicacion;
+			}
+			
+			break;
 		
-		st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
-		break;
 
-	case actTURN_SR:
-		
-		st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
-		break;
+		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
+			
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+
+				sig_ubicacion2 = NextCasilla(sig_ubicacion);
+
+				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
+						
+					st_result.jugador = sig_ubicacion2;
+				}
+			}		
+				
+			break;
+
+
+		// En el caso de los giros solo tendremos que cambiar la orientacion del jugador
+		case actTURN_L:
+			
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
+			break;
+
+		case actTURN_SR:
+			
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
+			break;
 	}
 	
 	return st_result;
@@ -323,8 +349,8 @@ bool Find(const stateN0 &item, const list<nodeN0> &lista){
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCIÓN DE MÉTODO DE BUSQUEDA
 
-
-// Búsqueda en anchura
+/*
+// VERSION 1 TUTORIAL --> Búsqueda en anchura
 bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	stateN0 current_state = inicio;
@@ -409,7 +435,7 @@ bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vec
 }
 
 
-// Búsqueda en anchura 2
+// VERSIÓN 2 TUTORIAL --> Búsqueda en anchura 2
 list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
@@ -520,9 +546,9 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 
 	return plan;
 }
+*/
 
-
-// Búsqueda en anchura 3
+// VERSIÓN DEFINITIVA TUTORIAL --> Búsqueda en anchura 3
 list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
@@ -647,6 +673,460 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// NIVEL 1
+
+// TODO
+bool VeoColaborador(const stateN0 &st, const vector<vector<unsigned char>> &mapa) {
+
+	bool veocolaborador = false;
+
+	// Ver si en las casillas delanteras tengo al colaborador y si es en rango correcto
+	if (st.jugador.f >= 0 and st.jugador.f <= 99 and st.jugador.c >= 0 and st.jugador.c <= 99) {
+
+		switch (st.jugador.brujula)
+		{
+			
+			case 0: 
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				break;
+
+			case 1:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				break;
+
+			case 2:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				break;
+
+			case 3:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				/*
+				mapaResultado[current_state.fil    ][current_state.col + 1] = terreno[1];
+				mapaResultado[current_state.fil + 1][current_state.col + 1] = terreno[2];
+				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[3];
+				mapaResultado[current_state.fil    ][current_state.col + 2] = terreno[4];
+				mapaResultado[current_state.fil + 1][current_state.col + 2] = terreno[5];
+				mapaResultado[current_state.fil + 2][current_state.col + 2] = terreno[6];
+				mapaResultado[current_state.fil + 2][current_state.col + 1] = terreno[7];
+				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[8];
+				mapaResultado[current_state.fil    ][current_state.col + 3] = terreno[9];
+				mapaResultado[current_state.fil + 1][current_state.col + 3] = terreno[10];
+				mapaResultado[current_state.fil + 2][current_state.col + 3] = terreno[11];
+				mapaResultado[current_state.fil + 3][current_state.col + 3] = terreno[12];
+				mapaResultado[current_state.fil + 2][current_state.col + 3] = terreno[13];
+				mapaResultado[current_state.fil + 1][current_state.col + 3] = terreno[14];
+				mapaResultado[current_state.fil    ][current_state.col + 3] = terreno[15];
+				*/
+
+				break;
+
+			case 4:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				/*
+				mapaResultado[current_state.fil + 1][current_state.col + 1] = terreno[1];
+				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[2];
+				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[3];
+				mapaResultado[current_state.fil + 2][current_state.col + 2] = terreno[4];
+				mapaResultado[current_state.fil + 2][current_state.col + 1] = terreno[5];
+				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[6];
+				mapaResultado[current_state.fil + 2][current_state.col - 1] = terreno[7];
+				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[8];
+				mapaResultado[current_state.fil + 3][current_state.col + 3] = terreno[9];
+				mapaResultado[current_state.fil + 3][current_state.col + 2] = terreno[10];
+				mapaResultado[current_state.fil + 3][current_state.col + 1] = terreno[11];
+				mapaResultado[current_state.fil + 3][current_state.col    ] = terreno[12];
+				mapaResultado[current_state.fil + 3][current_state.col - 1] = terreno[13];
+				mapaResultado[current_state.fil + 3][current_state.col - 2] = terreno[14];
+				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[15];
+				*/
+
+				break;
+
+			case 5:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				/*
+				mapaResultado[current_state.fil + 1][current_state.col    ] = terreno[1];
+				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[2];
+				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[3];
+				mapaResultado[current_state.fil + 2][current_state.col    ] = terreno[4];
+				mapaResultado[current_state.fil + 2][current_state.col - 1] = terreno[5];
+				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[6];
+				mapaResultado[current_state.fil + 1][current_state.col - 2] = terreno[7];
+				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[8];
+				mapaResultado[current_state.fil + 3][current_state.col    ] = terreno[9];
+				mapaResultado[current_state.fil + 3][current_state.col - 1] = terreno[10];
+				mapaResultado[current_state.fil + 3][current_state.col - 2] = terreno[11];
+				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[12];
+				mapaResultado[current_state.fil + 2][current_state.col - 3] = terreno[13];
+				mapaResultado[current_state.fil + 1][current_state.col - 3] = terreno[14];
+				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[15];
+				*/
+
+				break;
+
+			case 6:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				/*
+				mapaResultado[current_state.fil + 1][current_state.col - 1] = terreno[1];
+				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[2];
+				mapaResultado[current_state.fil - 1][current_state.col - 1] = terreno[3];
+				mapaResultado[current_state.fil + 2][current_state.col - 2] = terreno[4];
+				mapaResultado[current_state.fil + 1][current_state.col - 2] = terreno[5];
+				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[6];
+				mapaResultado[current_state.fil - 1][current_state.col - 2] = terreno[7];
+				mapaResultado[current_state.fil - 2][current_state.col - 2] = terreno[8];
+				mapaResultado[current_state.fil + 3][current_state.col - 3] = terreno[9];
+				mapaResultado[current_state.fil + 2][current_state.col - 3] = terreno[10];
+				mapaResultado[current_state.fil + 1][current_state.col - 3] = terreno[11];
+				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[12];
+				mapaResultado[current_state.fil - 1][current_state.col - 3] = terreno[13];
+				mapaResultado[current_state.fil - 2][current_state.col - 3] = terreno[14];
+				mapaResultado[current_state.fil - 3][current_state.col - 3] = terreno[15];
+				*/
+
+				break;
+
+			case 7:
+
+				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c] == 'c')     {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
+				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+
+				/*
+				mapaResultado[current_state.fil    ][current_state.col - 1] = terreno[1];
+				mapaResultado[current_state.fil - 1][current_state.col - 1] = terreno[2];
+				mapaResultado[current_state.fil - 1][current_state.col    ] = terreno[3];
+				mapaResultado[current_state.fil    ][current_state.col - 2] = terreno[4];
+				mapaResultado[current_state.fil - 1][current_state.col - 2] = terreno[5];
+				mapaResultado[current_state.fil - 2][current_state.col - 2] = terreno[6];
+				mapaResultado[current_state.fil - 2][current_state.col - 1] = terreno[7];
+				mapaResultado[current_state.fil - 2][current_state.col    ] = terreno[8];
+				mapaResultado[current_state.fil    ][current_state.col - 3] = terreno[9];
+				mapaResultado[current_state.fil - 1][current_state.col - 3] = terreno[10];
+				mapaResultado[current_state.fil - 2][current_state.col - 3] = terreno[11];
+				mapaResultado[current_state.fil - 3][current_state.col - 3] = terreno[12];
+				mapaResultado[current_state.fil - 3][current_state.col - 2] = terreno[13];
+				mapaResultado[current_state.fil - 3][current_state.col - 1] = terreno[14];
+				mapaResultado[current_state.fil - 3][current_state.col    ] = terreno[15];
+				*/
+
+				break;
+		}
+	}
+
+	
+
+	return veocolaborador;
+}
+
+
+// NIVEL 1 --> Búsqueda en anchura colaborador
+list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+
+	nodeN0 current_node;
+	list<nodeN0> abiertos; // frontier
+	set<nodeN0> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
+	list<Action> plan;
+
+	current_node.st = inicio;
+	abiertos.push_back(current_node);
+
+	bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
+
+	// Proceso de búsqueda
+	while (!abiertos.empty() and !SolutionFound) {
+
+		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
+		abiertos.pop_front();
+		cerrados.insert(current_node);
+
+		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+
+		/*
+			Si jugador ve a colaborador, el numero de nodos descendientes aumentara		
+
+				* Funcion que te diga si ve al colaborador o no
+				* Modificar la función apply porque tenemos mas opciones
+				* Modificar el operator <
+		*/
+
+		if (VeoColaborador(inicio, mapa)) {
+
+			// Generar hijo act_CLB_WALK
+			nodeN0 child_clb_walk = current_node;
+			child_clb_walk.st = apply(act_CLB_WALK, current_node.st, mapa);
+
+			// Guardar la acción en secuencia
+			child_clb_walk.secuencia.push_back(act_CLB_WALK);
+
+			// Si el nodo hijo tras andar es solución, se guarda en estado actual
+			if (child_clb_walk.st.colaborador.f == final.f and child_clb_walk.st.colaborador.c == final.c){
+				
+				current_node = child_clb_walk;
+				SolutionFound = true;
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			} else if (cerrados.find(child_clb_walk) == cerrados.end()){
+				
+				abiertos.push_back(child_clb_walk);
+			}
+
+
+			// Generar hijo act_CLB_TURN_SR
+			if (!SolutionFound) {
+
+				// Generar hijo act_CLB_TURN_SR
+				nodeN0 child_clb_turnsr = current_node;
+				child_clb_turnsr.st = apply(act_CLB_TURN_SR, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_turnsr) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_turnsr);
+				}
+			}
+
+			// TODO: posibilidad de generar hijo act_CLB_STOP
+
+
+
+		}
+
+
+		// Condición para que no se generen estados hijos si ya se encontro la solucion
+		if (!SolutionFound) {
+
+			// Generar hijo actWALK
+			nodeN0 child_walk = current_node; 
+			child_walk.st = apply(actWALK, current_node.st, mapa);
+			
+			// Guardar la accion en secuencia
+			child_walk.secuencia.push_back(actWALK);
+
+			// Si el nodo hijo tras andar es solución, se guarda en estado actual
+			if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+				
+				current_node = child_walk;
+				SolutionFound = true;
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			} else if (cerrados.find(child_walk) == cerrados.end()){
+				
+				abiertos.push_back(child_walk);
+			}
+		}
+		
+		
+		if (!SolutionFound){
+			
+			// Generar hijo actRUN
+			nodeN0 child_run = current_node;
+			child_run.st = apply(actRUN, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_run.secuencia.push_back(actRUN);
+
+			if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+				
+				current_node = child_run;
+				SolutionFound = true;
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			} else if (cerrados.find(child_run) == cerrados.end()){
+				
+				abiertos.push_back(child_run);
+			}
+		}
+
+		// Condición para que no se generen estados hijos si ya se encontro la solucion
+		// Aqui no se incluye la actualización de current_state, porque sin moverte no se puede alcanzar la casilla destino
+		if (!SolutionFound){
+			
+			// Generar hijo actTURN_L
+			nodeN0 child_turnl = current_node; 
+			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
+
+			// Guardar accion en secuencia
+			child_turnl.secuencia.push_back(actTURN_L);
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnl) == cerrados.end()){
+				
+				abiertos.push_back(child_turnl);
+			}		
+			
+			// Generar hijo actTURN_SR
+			nodeN0 child_turnsr = current_node;
+			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_turnsr.secuencia.push_back(actTURN_SR);
+
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnsr) == cerrados.end()){
+				
+				abiertos.push_back(child_turnsr);
+			}		
+		}
+
+		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+		if (!SolutionFound and !abiertos.empty()) {
+
+			current_node = abiertos.front();
+
+			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+
+				abiertos.pop_front();
+
+				if (!abiertos.empty()) {
+
+					current_node = abiertos.front();
+				}
+			}
+		}
+	}
+
+	// Si ha encontrado solución guardar secuencia y pintarlo
+	if (SolutionFound) {
+
+		plan = current_node.secuencia;
+
+		cout << "Encontrado un plan" << endl;
+		PintaPlan(plan);
+	}
+
+	return plan;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCIÓN THINK
 
 
@@ -677,7 +1157,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 				case 0: plan = AnchuraSoloJugador_V3(c_state, goal, mapaResultado);
 						break;
 
-				case 1: cout << "Pendiente 1" << endl;
+				case 1: plan = AnchuraSoloColaborador(c_state, goal, mapaResultado);
 						break;
 
 				case 2: cout << "Pendiente 2" << endl;
@@ -728,7 +1208,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 		if (hayPlan and plan.size() > 0) {
 
 			accion = plan.front(); // La accion corresponde al primer elemento de la lista
-			plan.pop_front(); // Sacar el primer elemento de la lista de acciones plan
+			plan.pop_front(); // Quitar el primer elemento de la lista de acciones plan
 		}
 
 		if (plan.size() == 0) {
