@@ -140,7 +140,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
 					
-					st_result.jugador = sig_ubicacion;
+				st_result.jugador = sig_ubicacion;
 			}
 			
 			break;
@@ -982,11 +982,10 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 		*/
 
 		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
-
+ 
 
 		// GENERAR HIJOS COLABORADOR
-		if (VeoColaborador(inicio, mapa)) {
-
+		//if (VeoColaborador(current_node.st, mapa)) {
 
 			// Generar hijo act_CLB_WALK
 			nodeN0 child_clb_walk = current_node;
@@ -1025,10 +1024,11 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			}
 
 
-			if (!SolutionFound || inicio.ultimaOrdenColaborador == act_CLB_WALK || inicio.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+			if (!SolutionFound || current_node.st.ultimaOrdenColaborador == act_CLB_WALK || current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR) {
 
 				// Generar hijo act_CLB_STOP si la ultima fue andar o girar
 				nodeN0 child_clb_stop= current_node;
+				child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
 				
 				// Guardar accion en secuencia
 				child_clb_stop.secuencia.push_back(act_CLB_STOP);
@@ -1039,7 +1039,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 					abiertos.push_back(child_clb_stop);
 				}
 			}
-		}
+		//}
 
 
 		// GENERAR HIJOS JUGADOR
@@ -1052,14 +1052,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			// Guardar la accion en secuencia
 			child_walk.secuencia.push_back(actWALK);
 
-			// Si el nodo hijo tras andar es solución, se guarda en estado actual
-			if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
-				
-				current_node = child_walk;
-				SolutionFound = true;
-			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			} else if (cerrados.find(child_walk) == cerrados.end()){
+			if (cerrados.find(child_walk) == cerrados.end()){
 				
 				abiertos.push_back(child_walk);
 			}
@@ -1075,13 +1068,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			// Guardar accion en secuencia
 			child_run.secuencia.push_back(actRUN);
 
-			if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
-				
-				current_node = child_run;
-				SolutionFound = true;
-			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			} else if (cerrados.find(child_run) == cerrados.end()){
+			if (cerrados.find(child_run) == cerrados.end()){
 				
 				abiertos.push_back(child_run);
 			}
