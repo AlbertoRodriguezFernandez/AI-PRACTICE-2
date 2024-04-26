@@ -85,7 +85,10 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 	switch (a)
 	{
 
+		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
 		case act_CLB_WALK:    
+
+			st_result.ultimaOrdenColaborador = act_CLB_WALK;
 		
 			sig_ubicacion = NextCasilla(st.colaborador);
 
@@ -99,12 +102,40 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 
 		case act_CLB_TURN_SR:   
 
+			st_result.ultimaOrdenColaborador = act_CLB_TURN_SR;
+
 			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
+			
 			break;
 
 
+		case act_CLB_STOP:
+
+			st_result.ultimaOrdenColaborador = act_CLB_STOP;
+
+			break;
+
+
+		// CASOS DEL JUGADOR (modificar ambos estados tanto jugador como colaborador)
 		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
 			
+			// Estado colaborador
+			if (st_result.ultimaOrdenColaborador == act_CLB_WALK) {
+
+				st_result = apply(act_CLB_WALK, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+				st_result = apply(act_CLB_TURN_SR, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_STOP) {
+
+				st_result = apply(act_CLB_STOP, st_result, mapa);
+			}
+			
+			// Estado jugador
 			sig_ubicacion = NextCasilla(st.jugador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
@@ -117,6 +148,23 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 
 		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
 			
+			// Estado colaborador
+			if (st_result.ultimaOrdenColaborador == act_CLB_WALK) {
+
+				st_result = apply(act_CLB_WALK, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+				st_result = apply(act_CLB_TURN_SR, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_STOP) {
+
+				st_result = apply(act_CLB_STOP, st_result, mapa);
+			}
+			
+			// Estado jugador
 			sig_ubicacion = NextCasilla(st.jugador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
@@ -131,16 +179,71 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 				
 			break;
 
-
-		// En el caso de los giros solo tendremos que cambiar la orientacion del jugador
-		case actTURN_L:
+		
+		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
 			
+			// Estado colaborador
+			if (st_result.ultimaOrdenColaborador == act_CLB_WALK) {
+
+				st_result = apply(act_CLB_WALK, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+				st_result = apply(act_CLB_TURN_SR, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_STOP) {
+
+				st_result = apply(act_CLB_STOP, st_result, mapa);
+			}
+		
+			// Estado jugador
 			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
 			break;
 
+
 		case actTURN_SR:
+
+			// Estado colaborador
+			if (st_result.ultimaOrdenColaborador == act_CLB_WALK) {
+
+				st_result = apply(act_CLB_WALK, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+				st_result = apply(act_CLB_TURN_SR, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_STOP) {
+
+				st_result = apply(act_CLB_STOP, st_result, mapa);
+			}
 			
+			// Estado jugador
 			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
+			break;
+
+
+		case actIDLE:
+
+			// Estado colaborador
+			if (st_result.ultimaOrdenColaborador == act_CLB_WALK) {
+
+				st_result = apply(act_CLB_WALK, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+
+				st_result = apply(act_CLB_TURN_SR, st_result, mapa);
+			}
+
+			if (st_result.ultimaOrdenColaborador == act_CLB_STOP) {
+
+				st_result = apply(act_CLB_STOP, st_result, mapa);
+			}
+
 			break;
 	}
 	
@@ -866,18 +969,24 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 		abiertos.pop_front();
 		cerrados.insert(current_node);
 
+
 		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
 
 		/*
-			Si jugador ve a colaborador, el numero de nodos descendientes aumentara		
-
+				*Si jugador ve a colaborador, el numero de nodos descendientes aumentara
 				* Funcion que te diga si ve al colaborador o no
 				* Modificar la estructura estado y nodo con respecto ultima accion colaborador
+				* Modificar la correcta inicialización de ultimaOrdenColaborador
 				* Modificar la función apply porque tenemos mas opciones
 				* Modificar el operator <
 		*/
 
+		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
+
+
+		// GENERAR HIJOS COLABORADOR
 		if (VeoColaborador(inicio, mapa)) {
+
 
 			// Generar hijo act_CLB_WALK
 			nodeN0 child_clb_walk = current_node;
@@ -899,13 +1008,12 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			}
 
 
-			// Generar hijo act_CLB_TURN_SR
 			if (!SolutionFound) {
 
 				// Generar hijo act_CLB_TURN_SR
 				nodeN0 child_clb_turnsr = current_node;
 				child_clb_turnsr.st = apply(act_CLB_TURN_SR, current_node.st, mapa);
-				
+			
 				// Guardar accion en secuencia
 				child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
 
@@ -915,25 +1023,26 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 					abiertos.push_back(child_clb_turnsr);
 				}
 			}
-		}
 
-		//Generar hijo act_CLB_STOP si no hay solución o si el colaborador ando o giro
-		if (!SolutionFound || inicio.ultimaOrdenColaborador == act_CLB_WALK || inicio.ultimaOrdenColaborador == act_CLB_TURN_SR) {
 
-			// Generar hijo act_CLB_STOP
-			nodeN0 child_clb_stop= current_node;
-			
-			// Guardar accion en secuencia
-			child_clb_stop.secuencia.push_back(act_CLB_STOP);
+			if (!SolutionFound || inicio.ultimaOrdenColaborador == act_CLB_WALK || inicio.ultimaOrdenColaborador == act_CLB_TURN_SR) {
 
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_clb_stop) == cerrados.end()){
+				// Generar hijo act_CLB_STOP si la ultima fue andar o girar
+				nodeN0 child_clb_stop= current_node;
 				
-				abiertos.push_back(child_clb_stop);
+				// Guardar accion en secuencia
+				child_clb_stop.secuencia.push_back(act_CLB_STOP);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_stop) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_stop);
+				}
 			}
 		}
 
-		// Condición para que no se generen estados hijos si ya se encontro la solucion
+
+		// GENERAR HIJOS JUGADOR
 		if (!SolutionFound) {
 
 			// Generar hijo actWALK
@@ -978,8 +1087,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			}
 		}
 
-		// Condición para que no se generen estados hijos si ya se encontro la solucion
-		// Aqui no se incluye la actualización de current_state, porque sin moverte no se puede alcanzar la casilla destino
+		
 		if (!SolutionFound){
 			
 			// Generar hijo actTURN_L
@@ -1008,6 +1116,24 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 				abiertos.push_back(child_turnsr);
 			}		
 		}
+
+
+		if (!SolutionFound) {
+
+			// Generar hijo actIDLE
+			nodeN0 child_idle = current_node; 
+			child_idle.st = apply(actIDLE, current_node.st, mapa);
+
+			// Guardar accion en secuencia
+			child_idle.secuencia.push_back(actIDLE);
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_idle) == cerrados.end()){
+				
+				abiertos.push_back(child_idle);
+			}	
+		}
+
 
 		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
 		if (!SolutionFound and !abiertos.empty()) {
@@ -1065,7 +1191,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			goal.f = sensores.destinoF;
 			goal.c = sensores.destinoC;
 
-
+			
 			switch (sensores.nivel)
 			{
 				case 0: plan = AnchuraSoloJugador_V3(c_state, goal, mapaResultado);

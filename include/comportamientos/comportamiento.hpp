@@ -24,6 +24,7 @@ struct ubicacion{
 
 
 struct Sensores {
+ 
   int nivel;
   int vida;
   int bateria;
