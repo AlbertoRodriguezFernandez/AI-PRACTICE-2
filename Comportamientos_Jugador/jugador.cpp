@@ -772,175 +772,200 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // NIVEL 1
 
-// Función para ver al colaborador
-bool VeoColaborador(const stateN0 &st, const vector<vector<unsigned char>> &mapa) {
+// TODO: Función para ver al colaborador
+bool VeoColaborador(const stateN0 &st) {
 
 	bool veocolaborador = false;
 
 	// Ver si en las casillas delanteras tengo al colaborador y si es en rango correcto
-	if (st.jugador.f >= 0 and st.jugador.f <= 99 and st.jugador.c >= 0 and st.jugador.c <= 99) {
+	if (st.jugador.f >= 0 and st.jugador.f <= 99 and st.jugador.c >= 0 and st.jugador.c <= 99 and 
+		st.colaborador.f >= 0 and st.colaborador.f <= 99 and st.colaborador.c >= 0 and st.colaborador.c <= 99 ) {
 
 		switch (st.jugador.brujula)
 		{
 			
-			case 0: 
+			case norte: 
 
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
 
-				break;
-
-			case 1:
-
-				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+					veocolaborador = true;
+				}
 
 				break;
 
-			case 2:
+			case noreste:
 
-				if (mapa[st.jugador.f - 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
 
-				break;
-
-			case 3:
-
-				if (mapa[st.jugador.f    ][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c + 3] == 'c') {veocolaborador = true;}
+					veocolaborador = true;
+				}
 
 				break;
 
-			case 4:
+			case este:
 
-				if (mapa[st.jugador.f + 1][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c + 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c + 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c + 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
 
-				break;
-
-			case 5:
-
-				if (mapa[st.jugador.f + 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+					veocolaborador = true;
+				}
 
 				break;
 
-			case 6:
+			case sureste:
 
-				if (mapa[st.jugador.f + 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f + 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
 
 				break;
 
-			case 7:
+			case sur:
 
-				if (mapa[st.jugador.f    ][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c    ] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f    ][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 1][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 2][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 3] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 2] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c - 1] == 'c') {veocolaborador = true;}
-				if (mapa[st.jugador.f - 3][st.jugador.c    ] == 'c') {veocolaborador = true;}
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
 
+					veocolaborador = true;
+				}
+
+				break;
+
+			case suroeste:
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+				
+				break;
+
+			case oeste:
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case noroeste:
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+				
 				break;
 		}
 	}
@@ -985,7 +1010,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
  
 
 		// GENERAR HIJOS COLABORADOR
-		//if (VeoColaborador(current_node.st, mapa)) {
+		//if (VeoColaborador(current_node.st)) {
 
 			// Generar hijo act_CLB_WALK
 			nodeN0 child_clb_walk = current_node;
