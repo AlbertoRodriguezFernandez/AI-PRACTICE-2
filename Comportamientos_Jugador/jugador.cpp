@@ -784,7 +784,7 @@ bool VeoColaborador(const stateN0 &st) {
 		switch (st.jugador.brujula)
 		{
 			
-			case norte: 
+			case norte: // acabado
 
 				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
 				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
@@ -807,161 +807,161 @@ bool VeoColaborador(const stateN0 &st) {
 
 				break;
 
-			case noreste:
+			case noreste: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
 					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
 					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
 					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -3)){
 
 					veocolaborador = true;
 				}
 
 				break;
 
-			case este:
+			case este: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
-
-					veocolaborador = true;
-				}
-
-				break;
-
-			case sureste:
-
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+				if ((st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -1)  ||
+				    (st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -1)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1)  ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 3  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3)){
 
 					veocolaborador = true;
 				}
 
 				break;
 
-			case sur:
+			case sureste: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -3)){
 
 					veocolaborador = true;
 				}
 
 				break;
 
-			case suroeste:
+			case sur: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1) ||
+				    (st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case suroeste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0) ||
+				    (st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 3)){
 
 					veocolaborador = true;
 				}
 				
 				break;
 
-			case oeste:
+			case oeste: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1) ||
+				    (st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 3  && st.jugador.c - st.colaborador.c == 3)){
 
 					veocolaborador = true;
 				}
 
 				break;
 
-			case noroeste:
+			case noroeste: // acabado
 
-				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
-				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
 					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
-					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 3)){
 
 					veocolaborador = true;
 				}
@@ -1010,7 +1010,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
  
 
 		// GENERAR HIJOS COLABORADOR
-		//if (VeoColaborador(current_node.st)) {
+		if (VeoColaborador(current_node.st)) {
 
 			// Generar hijo act_CLB_WALK
 			nodeN0 child_clb_walk = current_node;
@@ -1064,7 +1064,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 					abiertos.push_back(child_clb_stop);
 				}
 			}
-		//}
+		}
 
 
 		// GENERAR HIJOS JUGADOR
