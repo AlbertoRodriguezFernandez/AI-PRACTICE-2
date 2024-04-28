@@ -1049,7 +1049,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 			}
 
 
-			if (!SolutionFound || current_node.st.ultimaOrdenColaborador == act_CLB_WALK || current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR) {
+			if (!SolutionFound and (current_node.st.ultimaOrdenColaborador == act_CLB_WALK or current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)) {
 
 				// Generar hijo act_CLB_STOP si la ultima fue andar o girar
 				nodeN0 child_clb_stop= current_node;
