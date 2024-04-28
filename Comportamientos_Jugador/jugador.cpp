@@ -708,6 +708,7 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // NIVEL 1
 
+
 // Función para ver al colaborador
 bool VeoColaborador(const stateN0 &st) {
 
