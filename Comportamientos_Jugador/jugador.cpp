@@ -708,7 +708,7 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // NIVEL 1
 
-// TODO: Función para ver al colaborador
+// Función para ver al colaborador
 bool VeoColaborador(const stateN0 &st) {
 
 	bool veocolaborador = false;
@@ -910,7 +910,7 @@ bool VeoColaborador(const stateN0 &st) {
 }
 
 
-// NIVEL 1 --> Búsqueda en anchura colaborador
+// Búsqueda en anchura colaborador
 list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
