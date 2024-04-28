@@ -1166,7 +1166,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			c_state.colaborador.f = sensores.CLBposF;
 			c_state.colaborador.c = sensores.CLBposC;
 			c_state.colaborador.brujula = sensores.CLBsentido;
-			c_state.ultimaOrdenColaborador = act_CLB_STOP;
+			c_state.ultimaOrdenColaborador = act_CLB_STOP; // NIVEL 1: actualizar ultima orden colaborador
 			goal.f = sensores.destinoF;
 			goal.c = sensores.destinoC;
 
