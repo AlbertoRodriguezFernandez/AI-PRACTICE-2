@@ -6,7 +6,7 @@
 #include <list>
 
 
-// Estado  
+// Estado NIVELES 0, 1  
 struct stateN0{
 
   ubicacion jugador;
@@ -28,7 +28,33 @@ struct stateN0{
 };
 
 
-// Nodo: almacenar en cada nodo la secuencia de acciones hasta el momento
+// TODO: Estado NIVELES 2, 3
+struct stateN2{
+
+  ubicacion jugador;
+  ubicacion colaborador;
+  Action ultimaOrdenColaborador; 
+  int coste;
+  bool tengo_zapatillas;
+  bool tengo_bikini;
+
+
+  bool operator==(const stateN2 &x) const {
+
+    // Uso operator== de la struct ubicacion 
+    if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c and coste == x.coste and tengo_zapatillas == x.tengo_zapatillas and tengo_bikini == x.tengo_bikini) {
+
+      return true;
+    
+    } else {
+
+      return false;
+    }
+  }
+};
+
+
+// Nodo NIVELES O, 1: almacenar en cada nodo la secuencia de acciones hasta el momento
 struct nodeN0{
  
   stateN0 st; // Estado actual
@@ -50,6 +76,25 @@ struct nodeN0{
             (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula < b.st.colaborador.brujula) ||
             (st.jugador.f == b.st.jugador.f and st.jugador.c == b.st.jugador.c and st.jugador.brujula == b.st.jugador.brujula and st.colaborador.f == b.st.colaborador.f and st.colaborador.c == b.st.colaborador.c and st.colaborador.brujula == b.st.colaborador.brujula and st.ultimaOrdenColaborador < b.st.ultimaOrdenColaborador);
   }
+};
+
+
+// TODO: Nodo NIVELES 2, 3: almacenar en cada nodo la secuencia de acciones hasta el momento
+struct nodeN2{
+ 
+  stateN0 st; // Estado actual
+  list<Action> secuencia; // Secuencia de acciones
+
+  bool operator==(const nodeN0 &n) const {
+    
+    return (st == n.st);
+  }
+
+  // TODO: DEFINIR OPERADOR CORRECTO PARA EL TIPO PRIORITY QUEUE
+  /*bool operator<(const nodeN0 &b)  const {
+    
+    
+  }*/
 };
 
 
@@ -104,11 +149,11 @@ class ComportamientoJugador : public Comportamiento {
   private:
 
     // Declarar Variables de Estado
+
     list<Action> plan; // Almacena el plan en ejecución
     bool hayPlan;      // Si se esta siguiendo o no un plan
     stateN0 c_state;   // Estado actual
 		ubicacion goal;    // Ubicación de casilla objetivo  
-
 };
 
 #endif
