@@ -163,7 +163,6 @@ class ComportamientoJugador : public Comportamiento {
     stateN2 c_state2; // Estado actual niveles 2 e 3 
 		ubicacion goal;    // Ubicación de casilla objetivo  
 
-
 };
 
 #endif

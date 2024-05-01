@@ -1,5 +1,7 @@
 #include "comportamientos/comportamiento.hpp"
 
+
+// Constructor Comportamiento con un tamaño
 Comportamiento::Comportamiento(unsigned int size){
   vector< unsigned char> aux(size, '?');
   vector< unsigned char> aux2(size, 0);
@@ -11,6 +13,8 @@ Comportamiento::Comportamiento(unsigned int size){
   }
 }
 
+
+// Constructor Comportamiento con un mapa
 Comportamiento::Comportamiento(vector< vector< unsigned char> > mapaR) {
   vector< unsigned char> aux(mapaR.size(), '?');
   vector< unsigned char> aux2(mapaR.size(), 0);
@@ -22,10 +26,14 @@ Comportamiento::Comportamiento(vector< vector< unsigned char> > mapaR) {
   mapaResultado = mapaR;
 }
 
+
+// Think
 Action Comportamiento::think(Sensores sensores){
   return actIDLE;
 }
 
+
+// Interact
 int Comportamiento::interact(Action accion, int valor){
   return 0;
 }

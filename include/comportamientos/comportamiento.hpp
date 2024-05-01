@@ -6,6 +6,7 @@
 using namespace std;
 
 
+// Enumerados para acción y orientación
 enum Orientacion {norte, noreste, este, sureste, sur, suroeste, oeste, noroeste};
 enum Action {actWALK, actRUN, actTURN_L, actTURN_SR, actWHEREIS, act_CLB_WALK, act_CLB_TURN_SR, act_CLB_STOP, actIDLE};
 
@@ -23,6 +24,7 @@ struct ubicacion{
 };
 
 
+// Estructura sensores
 struct Sensores {
  
   int nivel;
@@ -32,7 +34,7 @@ struct Sensores {
   bool reset;
   int posF;
   int posC;
-  Orientacion sentido; // Orientacion
+  Orientacion sentido; 
   int CLBposF;
   int CLBposC;
   Orientacion CLBsentido;
@@ -46,6 +48,7 @@ struct Sensores {
 };
 
 
+// Clase comportamiento
 class Comportamiento {
  
   public:
