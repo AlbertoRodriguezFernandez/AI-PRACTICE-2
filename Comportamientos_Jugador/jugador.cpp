@@ -5,6 +5,7 @@
 #include <cmath>
 #include <set>
 #include <stack>
+#include <queue>
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -74,8 +75,121 @@ ubicacion NextCasilla(const ubicacion &pos){
 }
 
 
-// Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
+// NIVELES O, 1: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
 stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char> > mapa){
+	
+	stateN0 st_result = st;
+	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
+	
+	// En niveles posteriores habra que tener en cuenta al agente colaborador
+
+	switch (a)
+	{
+
+		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
+		case act_CLB_WALK:    
+
+			st_result.ultimaOrdenColaborador = act_CLB_WALK;
+		
+			sig_ubicacion = NextCasilla(st.colaborador);
+
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.jugador.f and sig_ubicacion.c == st.jugador.c)) {
+
+				st_result.colaborador = sig_ubicacion;
+			}
+
+			break;
+
+
+		case act_CLB_TURN_SR:   
+
+			st_result.ultimaOrdenColaborador = act_CLB_TURN_SR;
+
+			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
+			
+			break;
+
+
+		case act_CLB_STOP:
+
+			st_result.ultimaOrdenColaborador = act_CLB_STOP;
+
+			break;
+
+
+		// CASOS DEL JUGADOR (modificar ambos estados tanto jugador como colaborador)
+		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+					
+				st_result.jugador = sig_ubicacion;
+			}
+			
+			break;
+		
+
+		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+
+				sig_ubicacion2 = NextCasilla(sig_ubicacion);
+
+				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
+						
+					st_result.jugador = sig_ubicacion2;
+				}
+			}		
+				
+			break;
+
+		
+		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+		
+			// Estado jugador
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
+			break;
+
+
+		case actTURN_SR:
+
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
+			break;
+
+		
+		case actIDLE:
+
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+
+			break;
+		
+	}
+	
+	return st_result;
+} 
+
+
+// TODO: NIVELES 2,3: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
+stateN2 apply2(const Action &a, const stateN2 &st, const vector<vector<unsigned char> > mapa){
 	
 	stateN0 st_result = st;
 	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
@@ -1145,6 +1259,243 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// NIVEL 2
+
+
+// TODO: Búsqueda en Dijkstra jugador
+list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+
+	nodeN0 current_node;
+	list<nodeN0> abiertos; // frontier
+	set<nodeN0> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
+	list<Action> plan;
+
+	current_node.st = inicio;
+	abiertos.push_back(current_node);
+
+	bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
+
+	// Proceso de búsqueda
+	while (!abiertos.empty() and !SolutionFound) {
+
+		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
+		abiertos.pop_front();
+		cerrados.insert(current_node);
+
+
+		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+
+		/*
+				*Si jugador ve a colaborador, el numero de nodos descendientes aumentara
+				* Funcion que te diga si ve al colaborador o no
+				* Modificar la estructura estado y nodo con respecto ultima accion colaborador
+				* Modificar la correcta inicialización de ultimaOrdenColaborador --> De primeras esta parado
+				* Modificar la función apply porque tenemos mas opciones
+				* Modificar el operator <
+		*/
+
+		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
+ 
+
+		// GENERAR HIJOS COLABORADOR
+		if (VeoColaborador(current_node.st)) {
+
+			// Generar hijo act_CLB_WALK
+			nodeN0 child_clb_walk = current_node;
+			child_clb_walk.st = apply(act_CLB_WALK, current_node.st, mapa);
+
+			// Guardar la acción en secuencia
+			child_clb_walk.secuencia.push_back(act_CLB_WALK);
+
+			// Si el nodo hijo tras andar es solución, se guarda en estado actual
+			if (child_clb_walk.st.colaborador.f == final.f and child_clb_walk.st.colaborador.c == final.c){
+				
+				current_node = child_clb_walk;
+				SolutionFound = true;
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			} else if (cerrados.find(child_clb_walk) == cerrados.end()){
+				
+				abiertos.push_back(child_clb_walk);
+			}
+
+
+			if (!SolutionFound) {
+
+				// Generar hijo act_CLB_TURN_SR
+				nodeN0 child_clb_turnsr = current_node;
+				child_clb_turnsr.st = apply(act_CLB_TURN_SR, current_node.st, mapa);
+			
+				// Guardar accion en secuencia
+				child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_turnsr) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_turnsr);
+				}
+			}
+
+
+			if (!SolutionFound and (current_node.st.ultimaOrdenColaborador == act_CLB_WALK or current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)) {
+
+				// Generar hijo act_CLB_STOP si la ultima fue andar o girar
+				nodeN0 child_clb_stop= current_node;
+				child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_clb_stop.secuencia.push_back(act_CLB_STOP);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_stop) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_stop);
+				}
+			}
+		}
+
+
+		// GENERAR HIJOS JUGADOR
+		if (!SolutionFound) {
+
+			// Generar hijo actWALK
+			nodeN0 child_walk = current_node; 
+			child_walk.st = apply(actWALK, current_node.st, mapa);
+			
+			// Guardar la accion en secuencia
+			child_walk.secuencia.push_back(actWALK);
+
+			// Comprobar si el colaborador ha llegado a la casilla destino
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+				SolutionFound = true;
+			}
+
+			if (cerrados.find(child_walk) == cerrados.end()){
+				
+				abiertos.push_back(child_walk);
+			}
+		}
+		
+		
+		if (!SolutionFound){
+			
+			// Generar hijo actRUN
+			nodeN0 child_run = current_node;
+			child_run.st = apply(actRUN, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_run.secuencia.push_back(actRUN);
+
+			// Comprobar si el colaborador ha llegado a la casilla destino
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+				SolutionFound = true;
+			}
+
+			if (cerrados.find(child_run) == cerrados.end()){
+				
+				abiertos.push_back(child_run);
+			}
+		}
+
+		
+		if (!SolutionFound){
+			
+			// Generar hijo actTURN_L
+			nodeN0 child_turnl = current_node; 
+			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
+
+			// Guardar accion en secuencia
+			child_turnl.secuencia.push_back(actTURN_L);
+
+			// Comprobar si el colaborador ha llegado a la casilla destino
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+				SolutionFound = true;
+			}
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnl) == cerrados.end()){
+				
+				abiertos.push_back(child_turnl);
+			}		
+			
+			// Generar hijo actTURN_SR
+			nodeN0 child_turnsr = current_node;
+			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+			
+			// Guardar accion en secuencia
+			child_turnsr.secuencia.push_back(actTURN_SR);
+
+			// Comprobar si el colaborador ha llegado a la casilla destino
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+				SolutionFound = true;
+			}
+
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_turnsr) == cerrados.end()){
+				
+				abiertos.push_back(child_turnsr);
+			}		
+		}
+
+
+		if (!SolutionFound) {
+
+			// Generar hijo actIDLE
+			nodeN0 child_idle = current_node; 
+			child_idle.st = apply(actIDLE, current_node.st, mapa);
+
+			// Guardar accion en secuencia
+			child_idle.secuencia.push_back(actIDLE);
+
+			// Comprobar si el colaborador ha llegado a la casilla destino
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+				SolutionFound = true;
+			}
+			
+			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+			if (cerrados.find(child_idle) == cerrados.end()){
+				
+				abiertos.push_back(child_idle);
+			}	
+		}
+
+
+		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+		if (!SolutionFound and !abiertos.empty()) {
+
+			current_node = abiertos.front();
+
+			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+
+				abiertos.pop_front();
+
+				if (!abiertos.empty()) {
+
+					current_node = abiertos.front();
+				}
+			}
+		}
+	}
+
+	// Si ha encontrado solución guardar secuencia y pintarlo
+	if (SolutionFound) {
+
+		plan = current_node.secuencia;
+
+		cout << "Encontrado un plan" << endl;
+		PintaPlan(plan);
+	}
+
+	return plan;
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCIÓN THINK
 
 
@@ -1161,13 +1512,28 @@ Action ComportamientoJugador::think(Sensores sensores)
 			// Método de búsqueda
 			cout << "Calculamos nuevo plan" << endl;
 			
+			// Inicialización variable de estado c_state (niveles 0 e 1)
 			c_state.jugador.f = sensores.posF;
 			c_state.jugador.c = sensores.posC;
 			c_state.jugador.brujula = sensores.sentido;
 			c_state.colaborador.f = sensores.CLBposF;
 			c_state.colaborador.c = sensores.CLBposC;
 			c_state.colaborador.brujula = sensores.CLBsentido;
-			c_state.ultimaOrdenColaborador = act_CLB_STOP; // NIVEL 1: actualizar ultima orden colaborador
+			c_state.ultimaOrdenColaborador = act_CLB_STOP; 
+
+			// Inicialización variable de estado c_state2 (niveles 2 e 3)
+			c_state2.jugador.f = sensores.posF;
+			c_state2.jugador.c = sensores.posC;
+			c_state2.jugador.brujula = sensores.sentido;
+			c_state2.colaborador.f = sensores.CLBposF;
+			c_state2.colaborador.c = sensores.CLBposC;
+			c_state2.colaborador.brujula = sensores.CLBsentido;
+			c_state2.ultimaOrdenColaborador = act_CLB_STOP; 
+			c_state2.tengo_bikini = false;
+			c_state2.tengo_zapatillas = false;
+			
+			
+			// Inicialización variable de estado goal
 			goal.f = sensores.destinoF;
 			goal.c = sensores.destinoC;
 
@@ -1180,7 +1546,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 				case 1: plan = AnchuraSoloColaborador(c_state, goal, mapaResultado);
 						break;
 
-				case 2: cout << "Pendiente 2" << endl;
+				case 2: plan = DijkstraSoloJugador(c_state2, goal, mapaResultado);
 						break;
 
 				case 3: cout << "Pendiente 3" << endl;

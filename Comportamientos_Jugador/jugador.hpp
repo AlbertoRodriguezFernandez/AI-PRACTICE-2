@@ -28,13 +28,12 @@ struct stateN0{
 };
 
 
-// TODO: Estado NIVELES 2, 3
+// Estado NIVELES 2, 3
 struct stateN2{
 
   ubicacion jugador;
   ubicacion colaborador;
   Action ultimaOrdenColaborador; 
-  int coste;
   bool tengo_zapatillas;
   bool tengo_bikini;
 
@@ -42,7 +41,12 @@ struct stateN2{
   bool operator==(const stateN2 &x) const {
 
     // Uso operator== de la struct ubicacion 
-    if (jugador == x.jugador and colaborador.f == x.colaborador.f and colaborador.c == x.colaborador.c and coste == x.coste and tengo_zapatillas == x.tengo_zapatillas and tengo_bikini == x.tengo_bikini) {
+    if (jugador == x.jugador and 
+        colaborador.f == x.colaborador.f and 
+        colaborador.c == x.colaborador.c and
+        ultimaOrdenColaborador == x.ultimaOrdenColaborador and 
+        tengo_zapatillas == x.tengo_zapatillas and 
+        tengo_bikini == x.tengo_bikini) {
 
       return true;
     
@@ -79,22 +83,23 @@ struct nodeN0{
 };
 
 
-// TODO: Nodo NIVELES 2, 3: almacenar en cada nodo la secuencia de acciones hasta el momento
+// Nodo NIVELES 2, 3: almacenar en cada nodo la secuencia de acciones hasta el momento
 struct nodeN2{
  
-  stateN0 st; // Estado actual
+  stateN2 st; // Estado actual
   list<Action> secuencia; // Secuencia de acciones
+  int coste; // Coste acumulado del nodo
 
-  bool operator==(const nodeN0 &n) const {
+  bool operator==(const nodeN2 &n) const {
     
     return (st == n.st);
   }
 
-  // TODO: DEFINIR OPERADOR CORRECTO PARA EL TIPO PRIORITY QUEUE
-  /*bool operator<(const nodeN0 &b)  const {
+  bool operator<(const nodeN2 &b)  const {
+
+    return coste > b.coste; // Ordenar la priority_queue de menor a mayor coste
     
-    
-  }*/
+  }
 };
 
 
@@ -115,10 +120,11 @@ class ComportamientoJugador : public Comportamiento {
       
       // Inicializar Variables de Estado
       
-      //plan = Inicializado en el metodo think;
+      //plan = Inicializado en el metodo think
       hayPlan = false;
-      //c_state = Inicializado en el metodo think;
-      //goal = Inicializado en el metodo think;
+      //c_state = Inicializado en el metodo think
+      //c_state2 = Inicializado en el metodo think
+      //goal = Inicializado en el metodo think
     
     }
 
@@ -129,6 +135,7 @@ class ComportamientoJugador : public Comportamiento {
       plan = comport.plan;
       hayPlan = comport.hayPlan;
       c_state = comport.c_state;
+      c_state2 = comport.c_state2;
       goal = comport.goal;
     }
     
@@ -152,8 +159,11 @@ class ComportamientoJugador : public Comportamiento {
 
     list<Action> plan; // Almacena el plan en ejecución
     bool hayPlan;      // Si se esta siguiendo o no un plan
-    stateN0 c_state;   // Estado actual
+    stateN0 c_state;   // Estado actual niveles 0 e 1 
+    stateN2 c_state2; // Estado actual niveles 2 e 3 
 		ubicacion goal;    // Ubicación de casilla objetivo  
+
+
 };
 
 #endif
