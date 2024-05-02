@@ -1218,8 +1218,8 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN2 current_node;
-	list<nodeN2> abiertos; // frontier
-	set<nodeN2> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
+	priority_queue<nodeN2> abiertos; // frontier
+	set<stateN2> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
 	list<Action> plan;
 
 	current_node.st = inicio;
