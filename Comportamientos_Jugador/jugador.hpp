@@ -55,6 +55,21 @@ struct stateN2{
       return false;
     }
   }
+
+  bool operator<(const stateN2 &b)  const {
+    
+    // Tener en cuenta al colaborador en niveles posteriores
+    return  (jugador.f < b.jugador.f) || 
+            (jugador.f == b.jugador.f and jugador.c < b.jugador.c) || 
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula < b.jugador.brujula) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f < b.colaborador.f) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c < b.colaborador.c) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula < b.colaborador.brujula) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador < b.ultimaOrdenColaborador) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas < b.tengo_zapatillas) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas == b.tengo_zapatillas and tengo_bikini < b.tengo_bikini);
+            
+  }
 };
 
 

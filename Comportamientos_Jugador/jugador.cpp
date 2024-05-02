@@ -1223,22 +1223,20 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 	list<Action> plan;
 
 	current_node.st = inicio;
-	abiertos.push_back(current_node);
+	abiertos.push(current_node);
 
-	bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
+	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
 
 	// Proceso de búsqueda
 	while (!abiertos.empty() and !SolutionFound) {
 
 		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
-		abiertos.pop_front();
-		cerrados.insert(current_node);
-
+		abiertos.pop();
+		cerrados.insert(current_node.st);
 
 		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
 		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
  
-
 		// GENERAR HIJOS JUGADOR
 		if (!SolutionFound) {
 
@@ -1249,9 +1247,9 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 			// Guardar la accion en secuencia
 			child_walk.secuencia.push_back(actWALK);
 
-			if (cerrados.find(child_walk) == cerrados.end()){
+			if (cerrados.find(child_walk.st) == cerrados.end()){
 				
-				abiertos.push_back(child_walk);
+				abiertos.push(child_walk);
 			}
 		}
 		
@@ -1265,9 +1263,9 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 			// Guardar accion en secuencia
 			child_run.secuencia.push_back(actRUN);
 
-			if (cerrados.find(child_run) == cerrados.end()){
+			if (cerrados.find(child_run.st) == cerrados.end()){
 				
-				abiertos.push_back(child_run);
+				abiertos.push(child_run);
 			}
 		}
 
@@ -1281,11 +1279,10 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 			// Guardar accion en secuencia
 			child_turnl.secuencia.push_back(actTURN_L);
 
-			
 			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnl) == cerrados.end()){
+			if (cerrados.find(child_turnl.st) == cerrados.end()){
 				
-				abiertos.push_back(child_turnl);
+				abiertos.push(child_turnl);
 			}		
 			
 			// Generar hijo actTURN_SR
@@ -1296,9 +1293,9 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 			child_turnsr.secuencia.push_back(actTURN_SR);
 
 			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnsr) == cerrados.end()){
+			if (cerrados.find(child_turnsr.st) == cerrados.end()){
 				
-				abiertos.push_back(child_turnsr);
+				abiertos.push(child_turnsr);
 			}		
 		}
 
@@ -1313,9 +1310,9 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 			child_idle.secuencia.push_back(actIDLE);
 			
 			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_idle) == cerrados.end()){
+			if (cerrados.find(child_idle.st) == cerrados.end()){
 				
-				abiertos.push_back(child_idle);
+				abiertos.push(child_idle);
 			}	
 		}
 
@@ -1323,15 +1320,15 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
 		if (!SolutionFound and !abiertos.empty()) {
 
-			current_node = abiertos.front();
+			current_node = abiertos.top();
 
-			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+			while (!abiertos.empty() and cerrados.find(current_node.st) != cerrados.end()) {
 
-				abiertos.pop_front();
+				abiertos.pop();
 
 				if (!abiertos.empty()) {
 
-					current_node = abiertos.front();
+					current_node = abiertos.top();
 				}
 			}
 		}
