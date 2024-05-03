@@ -1183,119 +1183,69 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 		case actWALK:
 
-			// Tengo zapatillas
-			if (nodo.st.tengo_zapatillas) {
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
-
-					nodo.st.tengo_zapatillas = false;
-					nodo.st.tengo_bikini = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				if (nodo.st.tengo_zapatillas) {
 
 					nodo.coste += 15;
-				}
 				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
-
-					nodo.coste += 100;
-				}
-			}
-
-			// Tengo bikini
-			if (nodo.st.tengo_bikini) {
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
-
-					nodo.st.tengo_bikini = false;
-					nodo.st.tengo_zapatillas = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				} else {
 
 					nodo.coste += 50;
 				}
-				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini) {
 
 					nodo.coste += 10;
+				
+				} else {
+
+					nodo.coste += 100;
 				}
-			}
-
-			// Resto casillas
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
-
-				nodo.coste += 1;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
 
 				nodo.coste += 2;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+			
+			} else {
 
 				nodo.coste += 1;
 			}
-			
+
 			break;
 
 
 		case actRUN:
 
-			// Tengo zapatillas
-			if (nodo.st.tengo_zapatillas) {
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
-
-					nodo.st.tengo_zapatillas = false;
-					nodo.st.tengo_bikini = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				if (nodo.st.tengo_zapatillas) {
 
 					nodo.coste += 25;
-				}
 				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
-
-					nodo.coste += 150;
-				}
-			}
-
-			// Tengo bikini
-			if (nodo.st.tengo_bikini) {
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
-
-					nodo.st.tengo_bikini = false;
-					nodo.st.tengo_zapatillas = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				} else {
 
 					nodo.coste += 75;
 				}
-				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini) {
 
 					nodo.coste += 15;
+				
+				} else {
+
+					nodo.coste += 150;
 				}
-			}
-
-			// Resto casillas
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
-
-				nodo.coste += 1;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
 
 				nodo.coste += 3;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+			
+			} else {
 
 				nodo.coste += 1;
 			}
@@ -1305,58 +1255,33 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 		case actTURN_L:
 
-			// Tengo zapatillas
-			if (nodo.st.tengo_zapatillas) {
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
-
-					nodo.st.tengo_zapatillas = false;
-					nodo.st.tengo_bikini = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				if (nodo.st.tengo_zapatillas) {
 
 					nodo.coste += 1;
-				}
 				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
-
-					nodo.coste += 30;
-				}
-			}
-
-			// Tengo bikini
-			if (nodo.st.tengo_bikini) {
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
-
-					nodo.st.tengo_bikini = false;
-					nodo.st.tengo_zapatillas = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				} else {
 
 					nodo.coste += 7;
 				}
-				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini) {
 
 					nodo.coste += 5;
+				
+				} else {
+
+					nodo.coste += 30;
 				}
-			}
-
-			// Resto casillas
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
-
-				nodo.coste += 1;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
 
 				nodo.coste += 2;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+			
+			} else {
 
 				nodo.coste += 1;
 			}
@@ -1366,58 +1291,33 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 		case actTURN_SR:
 
-			// Tengo zapatillas
-			if (nodo.st.tengo_zapatillas) {
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
-
-					nodo.st.tengo_zapatillas = false;
-					nodo.st.tengo_bikini = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				if (nodo.st.tengo_zapatillas) {
 
 					nodo.coste += 1;
-				}
 				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
-
-					nodo.coste += 10;
-				}
-			}
-
-			// Tengo bikini
-			if (nodo.st.tengo_bikini) {
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
-
-					nodo.st.tengo_bikini = false;
-					nodo.st.tengo_zapatillas = true;
-				}
-
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+				} else {
 
 					nodo.coste += 5;
 				}
-				
-				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini) {
 
 					nodo.coste += 2;
+				
+				} else {
+
+					nodo.coste += 10;
 				}
-			}
-
-			// Resto casillas
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
+			
+			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
 
 				nodo.coste += 1;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
-
-				nodo.coste += 1;
-			}
-
-			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+			
+			} else {
 
 				nodo.coste += 1;
 			}
@@ -1452,6 +1352,11 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
 			
 			// Actualizar nodo jugador anda
+
+			// Coste
+			st_result.coste = actualizarCosteNodo(actWALK, st_result, mapa);
+
+			// Estado (ubicacion)
 			sig_ubicacion = NextCasilla(st.st.jugador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
@@ -1459,14 +1364,30 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 				st_result.st.jugador = sig_ubicacion;
 			}
 
-			st_result.coste = actualizarCosteNodo(actWALK, st_result, mapa);
-			
+			// Estado (bikini y zapatillas)
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
+
+				st_result.st.tengo_zapatillas = false;
+				st_result.st.tengo_bikini = true;
+			}
+
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+
+				st_result.st.tengo_zapatillas = true;
+				st_result.st.tengo_bikini = false;
+			}
+
 			break;
 		
 
 		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
 			
 			// Actualizar nodo jugador corre
+
+			// Coste
+			st_result.coste = actualizarCosteNodo(actRUN, st_result, mapa);
+
+			// Estado (ubicacion)
 			sig_ubicacion = NextCasilla(st.st.jugador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
@@ -1477,9 +1398,20 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 						
 					st_result.st.jugador = sig_ubicacion2;
 				}
+			}	
+
+			// Estado (bikini y zapatillas)
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
+
+				st_result.st.tengo_zapatillas = false;
+				st_result.st.tengo_bikini = true;
 			}
 
-			st_result.coste = actualizarCosteNodo(actRUN, st_result, mapa);		
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+
+				st_result.st.tengo_zapatillas = true;
+				st_result.st.tengo_bikini = false;
+			}
 				
 			break;
 
@@ -1487,8 +1419,12 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
 			
 			// Actualizar nodo jugador gira izquierda
-			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+6)%8);
+
+			// Coste
 			st_result.coste = actualizarCosteNodo(actTURN_L, st_result, mapa);
+
+			// Estado (ubicacion)
+			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+6)%8);
 
 			break;
 
@@ -1496,8 +1432,12 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actTURN_SR:
 			
 			// Actualizar nodo jugador gira derecha
-			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+1)%8);
+
+			// Coste
 			st_result.coste = actualizarCosteNodo(actTURN_SR, st_result, mapa);
+
+			// Estado (ubicacion)
+			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+1)%8);
 
 			break;
 
@@ -1505,6 +1445,8 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actIDLE:
 
 			// Actualizar nodo jugador no hace nada
+
+			// Coste
 			st_result.coste = actualizarCosteNodo(actIDLE, st_result, mapa);
 
 			break;
@@ -1540,12 +1482,12 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 
 			// Si no ha habido solución, sacas el nodo de abiertos y antes de entrar en cerrados compruebas si hay solucion
 			abiertos.pop();
-
+			
 			if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
 
 				SolutionFound = true;
 			}
-
+			
 			cerrados.insert(current_node.st);
 
 			// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
