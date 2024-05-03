@@ -9,7 +9,7 @@
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// FUNCION APPLY
+// FUNCIONES AUXILIARES
 
 
 // Devuelve si una ubicación en el mapa es transitable para el jugador
@@ -73,188 +73,6 @@ ubicacion NextCasilla(const ubicacion &pos){
 
 	return next;
 }
-
-
-// NIVELES O, 1: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
-stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char> > mapa){
-	
-	stateN0 st_result = st;
-	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
-	
-	// En niveles posteriores habra que tener en cuenta al agente colaborador
-
-	switch (a)
-	{
-
-		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
-		case act_CLB_WALK:    
-
-			st_result.ultimaOrdenColaborador = act_CLB_WALK;
-		
-			sig_ubicacion = NextCasilla(st.colaborador);
-
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.jugador.f and sig_ubicacion.c == st.jugador.c)) {
-
-				st_result.colaborador = sig_ubicacion;
-			}
-
-			break;
-
-
-		case act_CLB_TURN_SR:   
-
-			st_result.ultimaOrdenColaborador = act_CLB_TURN_SR;
-
-			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
-			
-			break;
-
-
-		case act_CLB_STOP:
-
-			st_result.ultimaOrdenColaborador = act_CLB_STOP;
-
-			break;
-
-
-		// CASOS DEL JUGADOR (modificar ambos estados tanto jugador como colaborador)
-		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
-			
-			// Estado colaborador
-			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
-			
-			// Estado jugador
-			sig_ubicacion = NextCasilla(st.jugador);
-			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-					
-				st_result.jugador = sig_ubicacion;
-			}
-			
-			break;
-		
-
-		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
-			
-			// Estado colaborador
-			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
-			
-			// Estado jugador
-			sig_ubicacion = NextCasilla(st.jugador);
-			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-
-				sig_ubicacion2 = NextCasilla(sig_ubicacion);
-
-				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
-						
-					st_result.jugador = sig_ubicacion2;
-				}
-			}		
-				
-			break;
-
-		
-		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
-			
-			// Estado colaborador
-			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
-		
-			// Estado jugador
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
-			break;
-
-
-		case actTURN_SR:
-
-			// Estado colaborador
-			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
-			
-			// Estado jugador
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
-			break;
-
-		
-		case actIDLE:
-
-			// Estado colaborador
-			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
-
-			break;
-		
-	}
-	
-	return st_result;
-} 
-
-
-// TODO: NIVELES 2,3: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
-stateN2 apply2(const Action &a, const stateN2 &st, const vector<vector<unsigned char> > mapa){
-	
-	stateN2 st_result = st;
-	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
-	
-	switch (a)
-	{
-
-		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
-			
-			// Estado jugador
-			sig_ubicacion = NextCasilla(st.jugador);
-			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-					
-				st_result.jugador = sig_ubicacion;
-			}
-			
-			break;
-		
-
-		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
-			
-			// Estado jugador
-			sig_ubicacion = NextCasilla(st.jugador);
-			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
-
-				sig_ubicacion2 = NextCasilla(sig_ubicacion);
-
-				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
-						
-					st_result.jugador = sig_ubicacion2;
-				}
-			}		
-				
-			break;
-
-		
-		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
-			
-			// Estado jugador
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
-			break;
-
-
-		case actTURN_SR:
-			
-			// Estado jugador
-			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
-			break;
-
-		
-		case actIDLE:
-
-			// Estado jugador
-			break;
-		
-	}
-	
-	return st_result;
-} 
-
-
-// FUNCIONES DE VISUALIZACIÓN O PINTADA DE UN PLAN
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // Pone los elementos de una matriz a 0
@@ -413,10 +231,6 @@ void PintaPlan(const list<Action> &plan)
 }
 
 
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// FUNCION FIND
-
-
 // Encuentra si el elemento item está en la lista
 bool Find(const stateN0 &item, const list<stateN0> &lista){
 	
@@ -445,11 +259,126 @@ bool Find(const stateN0 &item, const list<nodeN0> &lista){
 }
 
 
+
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// FUNCIÓN DE MÉTODO DE BUSQUEDA
+// NIVEL 0 --> TUTORIAL
 
 
-// VERSION 1 TUTORIAL --> Búsqueda en anchura
+// Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
+stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char> > mapa){
+	
+	stateN0 st_result = st;
+	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
+	
+	// En niveles posteriores habra que tener en cuenta al agente colaborador
+
+	switch (a)
+	{
+
+		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
+		case act_CLB_WALK:    
+
+			st_result.ultimaOrdenColaborador = act_CLB_WALK;
+		
+			sig_ubicacion = NextCasilla(st.colaborador);
+
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.jugador.f and sig_ubicacion.c == st.jugador.c)) {
+
+				st_result.colaborador = sig_ubicacion;
+			}
+
+			break;
+
+
+		case act_CLB_TURN_SR:   
+
+			st_result.ultimaOrdenColaborador = act_CLB_TURN_SR;
+
+			st_result.colaborador.brujula = static_cast<Orientacion>((st_result.colaborador.brujula + 1) % 8);
+			
+			break;
+
+
+		case act_CLB_STOP:
+
+			st_result.ultimaOrdenColaborador = act_CLB_STOP;
+
+			break;
+
+
+		// CASOS DEL JUGADOR (modificar ambos estados tanto jugador como colaborador)
+		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+					
+				st_result.jugador = sig_ubicacion;
+			}
+			
+			break;
+		
+
+		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			sig_ubicacion = NextCasilla(st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.colaborador.f and sig_ubicacion.c == st.colaborador.c)){
+
+				sig_ubicacion2 = NextCasilla(sig_ubicacion);
+
+				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.colaborador.f and sig_ubicacion2.c == st.colaborador.c)){
+						
+					st_result.jugador = sig_ubicacion2;
+				}
+			}		
+				
+			break;
+
+		
+		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
+			
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+		
+			// Estado jugador
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+6)%8);
+			break;
+
+
+		case actTURN_SR:
+
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+			
+			// Estado jugador
+			st_result.jugador.brujula = static_cast<Orientacion>((st_result.jugador.brujula+1)%8);
+			break;
+
+		
+		case actIDLE:
+
+			// Estado colaborador
+			st_result = apply(st_result.ultimaOrdenColaborador, st_result, mapa);
+
+			break;
+		
+	}
+	
+	return st_result;
+}
+
+
+// Version 1 --> Búsqueda en anchura
 bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	stateN0 current_state = inicio;
@@ -534,7 +463,7 @@ bool AnchuraSoloJugador(const stateN0 &inicio, const ubicacion &final, const vec
 }
 
 
-// VERSIÓN 2 TUTORIAL --> Búsqueda en anchura 2
+// Version 2 --> Búsqueda en anchura 2
 list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
@@ -647,7 +576,7 @@ list<Action> AnchuraSoloJugador_V2(const stateN0 &inicio, const ubicacion &final
 }
 
 
-// VERSIÓN DEFINITIVA TUTORIAL --> Búsqueda en anchura 3
+// Version 3 --> Búsqueda en anchura 3
 list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN0 current_node;
@@ -655,120 +584,131 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 	set<nodeN0> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
 	list<Action> plan;
 
-	current_node.st = inicio;
-	abiertos.push_back(current_node);
+	// De primeras no puedo situar ni a jugador ni a colaborador en una casilla no transitable
+	if (CasillaTransitable(inicio.jugador, mapa) and CasillaTransitable(inicio.colaborador, mapa)) {
 
-	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
+		current_node.st = inicio;
+		abiertos.push_back(current_node);
 
-	// Proceso de búsqueda
-	while (!abiertos.empty() and !SolutionFound) {
+		bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
 
-		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
-		abiertos.pop_front();
-		cerrados.insert(current_node);
+		// Proceso de búsqueda
+		while (!abiertos.empty() and !SolutionFound) {
 
-		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+			// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
+			abiertos.pop_front();
+			cerrados.insert(current_node);
 
-		// Generar hijo actWALK
-		nodeN0 child_walk = current_node; 
-		child_walk.st = apply(actWALK, current_node.st, mapa);
-		
-		// Guardar la accion en secuencia
-		child_walk.secuencia.push_back(actWALK);
+			// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
 
-		// Si el nodo hijo tras andar es solución, se guarda en estado actual
-		if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
+			// Generar hijo actWALK
+			nodeN0 child_walk = current_node; 
+			child_walk.st = apply(actWALK, current_node.st, mapa);
 			
-			current_node = child_walk;
-			SolutionFound = true;
-		
-		// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-		} else if (cerrados.find(child_walk) == cerrados.end()){
-			
-			abiertos.push_back(child_walk);
-		}
+			// Guardar la accion en secuencia
+			child_walk.secuencia.push_back(actWALK);
 
-		// Condición para que no se generen estados hijos si ya se encontro la solucion
-		if (!SolutionFound){
-			
-			// Generar hijo actRUN
-			nodeN0 child_run = current_node;
-			child_run.st = apply(actRUN, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_run.secuencia.push_back(actRUN);
-
-			if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+			// Si el nodo hijo tras andar es solución, se guarda en estado actual
+			if (child_walk.st.jugador.f == final.f and child_walk.st.jugador.c == final.c){
 				
-				current_node = child_run;
+				current_node = child_walk;
 				SolutionFound = true;
 			
 			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			} else if (cerrados.find(child_run) == cerrados.end()){
+			} else if (cerrados.find(child_walk) == cerrados.end()){
 				
-				abiertos.push_back(child_run);
+				abiertos.push_back(child_walk);
 			}
-		}
 
-		// Condición para que no se generen estados hijos si ya se encontro la solucion
-		// Aqui no se incluye la actualización de current_state, porque sin moverte no se puede alcanzar la casilla destino
-		if (!SolutionFound){
-			
-			// Generar hijo actTURN_L
-			nodeN0 child_turnl = current_node; 
-			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
-
-			// Guardar accion en secuencia
-			child_turnl.secuencia.push_back(actTURN_L);
-			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnl) == cerrados.end()){
+			// Condición para que no se generen estados hijos si ya se encontro la solucion
+			if (!SolutionFound){
 				
-				abiertos.push_back(child_turnl);
-			}		
-			
-			// Generar hijo actTURN_SR
-			nodeN0 child_turnsr = current_node;
-			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_turnsr.secuencia.push_back(actTURN_SR);
-
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnsr) == cerrados.end()){
+				// Generar hijo actRUN
+				nodeN0 child_run = current_node;
+				child_run.st = apply(actRUN, current_node.st, mapa);
 				
-				abiertos.push_back(child_turnsr);
-			}		
-		}
+				// Guardar accion en secuencia
+				child_run.secuencia.push_back(actRUN);
 
-		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
-		if (!SolutionFound and !abiertos.empty()) {
+				if (child_run.st.jugador.f == final.f and child_run.st.jugador.c == final.c){
+					
+					current_node = child_run;
+					SolutionFound = true;
+				
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				} else if (cerrados.find(child_run) == cerrados.end()){
+					
+					abiertos.push_back(child_run);
+				}
+			}
 
-			current_node = abiertos.front();
+			// Condición para que no se generen estados hijos si ya se encontro la solucion
+			// Aqui no se incluye la actualización de current_state, porque sin moverte no se puede alcanzar la casilla destino
+			if (!SolutionFound){
+				
+				// Generar hijo actTURN_L
+				nodeN0 child_turnl = current_node; 
+				child_turnl.st = apply(actTURN_L, current_node.st, mapa);
 
-			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+				// Guardar accion en secuencia
+				child_turnl.secuencia.push_back(actTURN_L);
+				
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnl) == cerrados.end()){
+					
+					abiertos.push_back(child_turnl);
+				}		
+				
+				// Generar hijo actTURN_SR
+				nodeN0 child_turnsr = current_node;
+				child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_turnsr.secuencia.push_back(actTURN_SR);
 
-				abiertos.pop_front();
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnsr) == cerrados.end()){
+					
+					abiertos.push_back(child_turnsr);
+				}		
+			}
 
-				if (!abiertos.empty()) {
+			// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+			if (!SolutionFound and !abiertos.empty()) {
 
-					current_node = abiertos.front();
+				current_node = abiertos.front();
+
+				while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
+
+					abiertos.pop_front();
+
+					if (!abiertos.empty()) {
+
+						current_node = abiertos.front();
+					}
 				}
 			}
 		}
-	}
 
-	// Si ha encontrado solución guardar secuencia y pintarlo
-	if (SolutionFound) {
+		// Si ha encontrado solución guardar secuencia y pintarlo
+		if (SolutionFound) {
 
-		plan = current_node.secuencia;
+			plan = current_node.secuencia;
 
-		cout << "Encontrado un plan" << endl;
-		PintaPlan(plan);
-	}
+			cout << "Encontrado un plan" << endl;
+			PintaPlan(plan);
+		}
+	
+	} else {
+
+		cerr << "Casilla no transitable" << endl;
+		exit(EXIT_FAILURE);
+	} 
 
 	return plan;
 }
+
+
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -985,233 +925,594 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 	set<nodeN0> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
 	list<Action> plan;
 
-	current_node.st = inicio;
-	abiertos.push_back(current_node);
+	// De primeras no puedo situar ni a jugador ni a colaborador en una casilla no transitable
+	if (CasillaTransitable(inicio.jugador, mapa) and CasillaTransitable(inicio.colaborador, mapa)) {
 
-	bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
+		current_node.st = inicio;
+		abiertos.push_back(current_node);
 
-	// Proceso de búsqueda
-	while (!abiertos.empty() and !SolutionFound) {
+		bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
 
-		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
-		abiertos.pop_front();
-		cerrados.insert(current_node);
+		// Proceso de búsqueda
+		while (!abiertos.empty() and !SolutionFound) {
+
+			// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
+			abiertos.pop_front();
+			cerrados.insert(current_node);
 
 
-		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+			// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
 
-		/*
-				*Si jugador ve a colaborador, el numero de nodos descendientes aumentara
-				* Funcion que te diga si ve al colaborador o no
-				* Modificar la estructura estado y nodo con respecto ultima accion colaborador
-				* Modificar la correcta inicialización de ultimaOrdenColaborador --> De primeras esta parado
-				* Modificar la función apply porque tenemos mas opciones
-				* Modificar el operator <
-		*/
+			/*
+					*Si jugador ve a colaborador, el numero de nodos descendientes aumentara
+					* Funcion que te diga si ve al colaborador o no
+					* Modificar la estructura estado y nodo con respecto ultima accion colaborador
+					* Modificar la correcta inicialización de ultimaOrdenColaborador --> De primeras esta parado
+					* Modificar la función apply porque tenemos mas opciones
+					* Modificar el operator <
+			*/
 
-		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
- 
+			// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
+	
 
-		// GENERAR HIJOS COLABORADOR
-		if (VeoColaborador(current_node.st)) {
+			// GENERAR HIJOS COLABORADOR
+			if (VeoColaborador(current_node.st)) {
 
-			// Generar hijo act_CLB_WALK
-			nodeN0 child_clb_walk = current_node;
-			child_clb_walk.st = apply(act_CLB_WALK, current_node.st, mapa);
+				// Generar hijo act_CLB_WALK
+				nodeN0 child_clb_walk = current_node;
+				child_clb_walk.st = apply(act_CLB_WALK, current_node.st, mapa);
 
-			// Guardar la acción en secuencia
-			child_clb_walk.secuencia.push_back(act_CLB_WALK);
+				// Guardar la acción en secuencia
+				child_clb_walk.secuencia.push_back(act_CLB_WALK);
 
-			// Si el nodo hijo tras andar es solución, se guarda en estado actual
-			if (child_clb_walk.st.colaborador.f == final.f and child_clb_walk.st.colaborador.c == final.c){
+				// Si el nodo hijo tras andar es solución, se guarda en estado actual
+				if (child_clb_walk.st.colaborador.f == final.f and child_clb_walk.st.colaborador.c == final.c){
+					
+					current_node = child_clb_walk;
+					SolutionFound = true;
 				
-				current_node = child_clb_walk;
-				SolutionFound = true;
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				} else if (cerrados.find(child_clb_walk) == cerrados.end()){
+					
+					abiertos.push_back(child_clb_walk);
+				}
+
+
+				if (!SolutionFound) {
+
+					// Generar hijo act_CLB_TURN_SR
+					nodeN0 child_clb_turnsr = current_node;
+					child_clb_turnsr.st = apply(act_CLB_TURN_SR, current_node.st, mapa);
+				
+					// Guardar accion en secuencia
+					child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
+
+					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+					if (cerrados.find(child_clb_turnsr) == cerrados.end()){
+						
+						abiertos.push_back(child_clb_turnsr);
+					}
+				}
+
+
+				if (!SolutionFound and (current_node.st.ultimaOrdenColaborador == act_CLB_WALK or current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)) {
+
+					// Generar hijo act_CLB_STOP si la ultima fue andar o girar
+					nodeN0 child_clb_stop= current_node;
+					child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
+					
+					// Guardar accion en secuencia
+					child_clb_stop.secuencia.push_back(act_CLB_STOP);
+
+					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+					if (cerrados.find(child_clb_stop) == cerrados.end()){
+						
+						abiertos.push_back(child_clb_stop);
+					}
+				}
+			}
+
+
+			// GENERAR HIJOS JUGADOR
+			if (!SolutionFound) {
+
+				// Generar hijo actWALK
+				nodeN0 child_walk = current_node; 
+				child_walk.st = apply(actWALK, current_node.st, mapa);
+				
+				// Guardar la accion en secuencia
+				child_walk.secuencia.push_back(actWALK);
+
+				// Comprobar si el colaborador ha llegado a la casilla destino
+				if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+					SolutionFound = true;
+				}
+
+				if (cerrados.find(child_walk) == cerrados.end()){
+					
+					abiertos.push_back(child_walk);
+				}
+			}
 			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			} else if (cerrados.find(child_clb_walk) == cerrados.end()){
+			
+			if (!SolutionFound){
 				
-				abiertos.push_back(child_clb_walk);
+				// Generar hijo actRUN
+				nodeN0 child_run = current_node;
+				child_run.st = apply(actRUN, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_run.secuencia.push_back(actRUN);
+
+				// Comprobar si el colaborador ha llegado a la casilla destino
+				if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+					SolutionFound = true;
+				}
+
+				if (cerrados.find(child_run) == cerrados.end()){
+					
+					abiertos.push_back(child_run);
+				}
+			}
+
+			
+			if (!SolutionFound){
+				
+				// Generar hijo actTURN_L
+				nodeN0 child_turnl = current_node; 
+				child_turnl.st = apply(actTURN_L, current_node.st, mapa);
+
+				// Guardar accion en secuencia
+				child_turnl.secuencia.push_back(actTURN_L);
+
+				// Comprobar si el colaborador ha llegado a la casilla destino
+				if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+					SolutionFound = true;
+				}
+				
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnl) == cerrados.end()){
+					
+					abiertos.push_back(child_turnl);
+				}		
+				
+				// Generar hijo actTURN_SR
+				nodeN0 child_turnsr = current_node;
+				child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
+				
+				// Guardar accion en secuencia
+				child_turnsr.secuencia.push_back(actTURN_SR);
+
+				// Comprobar si el colaborador ha llegado a la casilla destino
+				if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+					SolutionFound = true;
+				}
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnsr) == cerrados.end()){
+					
+					abiertos.push_back(child_turnsr);
+				}		
 			}
 
 
 			if (!SolutionFound) {
 
-				// Generar hijo act_CLB_TURN_SR
-				nodeN0 child_clb_turnsr = current_node;
-				child_clb_turnsr.st = apply(act_CLB_TURN_SR, current_node.st, mapa);
-			
+				// Generar hijo actIDLE
+				nodeN0 child_idle = current_node; 
+				child_idle.st = apply(actIDLE, current_node.st, mapa);
+
 				// Guardar accion en secuencia
-				child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
+				child_idle.secuencia.push_back(actIDLE);
 
+				// Comprobar si el colaborador ha llegado a la casilla destino
+				if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
+
+					SolutionFound = true;
+				}
+				
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-				if (cerrados.find(child_clb_turnsr) == cerrados.end()){
+				if (cerrados.find(child_idle) == cerrados.end()){
 					
-					abiertos.push_back(child_clb_turnsr);
-				}
+					abiertos.push_back(child_idle);
+				}	
 			}
 
 
-			if (!SolutionFound and (current_node.st.ultimaOrdenColaborador == act_CLB_WALK or current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)) {
+			// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+			if (!SolutionFound and !abiertos.empty()) {
 
-				// Generar hijo act_CLB_STOP si la ultima fue andar o girar
-				nodeN0 child_clb_stop= current_node;
-				child_clb_stop.st = apply(act_CLB_STOP, current_node.st, mapa);
-				
-				// Guardar accion en secuencia
-				child_clb_stop.secuencia.push_back(act_CLB_STOP);
+				current_node = abiertos.front();
 
-				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-				if (cerrados.find(child_clb_stop) == cerrados.end()){
-					
-					abiertos.push_back(child_clb_stop);
-				}
-			}
-		}
+				while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
 
+					abiertos.pop_front();
 
-		// GENERAR HIJOS JUGADOR
-		if (!SolutionFound) {
+					if (!abiertos.empty()) {
 
-			// Generar hijo actWALK
-			nodeN0 child_walk = current_node; 
-			child_walk.st = apply(actWALK, current_node.st, mapa);
-			
-			// Guardar la accion en secuencia
-			child_walk.secuencia.push_back(actWALK);
-
-			// Comprobar si el colaborador ha llegado a la casilla destino
-			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
-
-				SolutionFound = true;
-			}
-
-			if (cerrados.find(child_walk) == cerrados.end()){
-				
-				abiertos.push_back(child_walk);
-			}
-		}
-		
-		
-		if (!SolutionFound){
-			
-			// Generar hijo actRUN
-			nodeN0 child_run = current_node;
-			child_run.st = apply(actRUN, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_run.secuencia.push_back(actRUN);
-
-			// Comprobar si el colaborador ha llegado a la casilla destino
-			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
-
-				SolutionFound = true;
-			}
-
-			if (cerrados.find(child_run) == cerrados.end()){
-				
-				abiertos.push_back(child_run);
-			}
-		}
-
-		
-		if (!SolutionFound){
-			
-			// Generar hijo actTURN_L
-			nodeN0 child_turnl = current_node; 
-			child_turnl.st = apply(actTURN_L, current_node.st, mapa);
-
-			// Guardar accion en secuencia
-			child_turnl.secuencia.push_back(actTURN_L);
-
-			// Comprobar si el colaborador ha llegado a la casilla destino
-			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
-
-				SolutionFound = true;
-			}
-			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnl) == cerrados.end()){
-				
-				abiertos.push_back(child_turnl);
-			}		
-			
-			// Generar hijo actTURN_SR
-			nodeN0 child_turnsr = current_node;
-			child_turnsr.st = apply(actTURN_SR, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_turnsr.secuencia.push_back(actTURN_SR);
-
-			// Comprobar si el colaborador ha llegado a la casilla destino
-			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
-
-				SolutionFound = true;
-			}
-
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnsr) == cerrados.end()){
-				
-				abiertos.push_back(child_turnsr);
-			}		
-		}
-
-
-		if (!SolutionFound) {
-
-			// Generar hijo actIDLE
-			nodeN0 child_idle = current_node; 
-			child_idle.st = apply(actIDLE, current_node.st, mapa);
-
-			// Guardar accion en secuencia
-			child_idle.secuencia.push_back(actIDLE);
-
-			// Comprobar si el colaborador ha llegado a la casilla destino
-			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
-
-				SolutionFound = true;
-			}
-			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_idle) == cerrados.end()){
-				
-				abiertos.push_back(child_idle);
-			}	
-		}
-
-
-		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
-		if (!SolutionFound and !abiertos.empty()) {
-
-			current_node = abiertos.front();
-
-			while (!abiertos.empty() and cerrados.find(current_node) != cerrados.end()) {
-
-				abiertos.pop_front();
-
-				if (!abiertos.empty()) {
-
-					current_node = abiertos.front();
+						current_node = abiertos.front();
+					}
 				}
 			}
 		}
+
+		// Si ha encontrado solución guardar secuencia y pintarlo
+		if (SolutionFound) {
+
+			plan = current_node.secuencia;
+
+			cout << "Encontrado un plan" << endl;
+			PintaPlan(plan);
+		}
+
+
+	} else {
+
+		cerr << "Casilla no transitable" << endl;
+		exit(EXIT_FAILURE);
 	}
 
-	// Si ha encontrado solución guardar secuencia y pintarlo
-	if (SolutionFound) {
 
-		plan = current_node.secuencia;
-
-		cout << "Encontrado un plan" << endl;
-		PintaPlan(plan);
-	}
 
 	return plan;
 }
 
 
+
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // NIVEL 2
+
+
+// TODO: Calcula el coste acumulado de un nodo
+int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsigned char> > mapa) {
+
+	// Consumo influye el tipo de terreno, la acción aplicada y si se está en posesión o no del objeto que permite reducir el consumo
+
+	// Comprobar en que terreno estoy y si dispongo de objetos: B, A, S, T, K, D, X
+	// Comprobar los costes de cada accion
+	// Comprobar la accion a realizar
+	// Actualizar estado zapatillas y bikini: solo puedo tener una de ellas.
+
+	switch (a)
+	{
+
+		case actWALK:
+
+			// Tengo zapatillas
+			if (nodo.st.tengo_zapatillas) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
+
+					nodo.st.tengo_zapatillas = false;
+					nodo.st.tengo_bikini = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 15;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 100;
+				}
+			}
+
+			// Tengo bikini
+			if (nodo.st.tengo_bikini) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
+
+					nodo.st.tengo_bikini = false;
+					nodo.st.tengo_zapatillas = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 50;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 10;
+				}
+			}
+
+			// Resto casillas
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
+
+				nodo.coste += 1;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+
+				nodo.coste += 2;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+
+				nodo.coste += 1;
+			}
+			
+			break;
+
+
+		case actRUN:
+
+			// Tengo zapatillas
+			if (nodo.st.tengo_zapatillas) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
+
+					nodo.st.tengo_zapatillas = false;
+					nodo.st.tengo_bikini = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 25;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 150;
+				}
+			}
+
+			// Tengo bikini
+			if (nodo.st.tengo_bikini) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
+
+					nodo.st.tengo_bikini = false;
+					nodo.st.tengo_zapatillas = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 75;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 15;
+				}
+			}
+
+			// Resto casillas
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
+
+				nodo.coste += 1;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+
+				nodo.coste += 3;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+
+				nodo.coste += 1;
+			}
+
+			break;
+
+
+		case actTURN_L:
+
+			// Tengo zapatillas
+			if (nodo.st.tengo_zapatillas) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
+
+					nodo.st.tengo_zapatillas = false;
+					nodo.st.tengo_bikini = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 1;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 30;
+				}
+			}
+
+			// Tengo bikini
+			if (nodo.st.tengo_bikini) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
+
+					nodo.st.tengo_bikini = false;
+					nodo.st.tengo_zapatillas = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 7;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 5;
+				}
+			}
+
+			// Resto casillas
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
+
+				nodo.coste += 1;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+
+				nodo.coste += 2;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+
+				nodo.coste += 1;
+			}
+
+			break;
+
+
+		case actTURN_SR:
+
+			// Tengo zapatillas
+			if (nodo.st.tengo_zapatillas) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'K') {
+
+					nodo.st.tengo_zapatillas = false;
+					nodo.st.tengo_bikini = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 1;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 10;
+				}
+			}
+
+			// Tengo bikini
+			if (nodo.st.tengo_bikini) {
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'D') {
+
+					nodo.st.tengo_bikini = false;
+					nodo.st.tengo_zapatillas = true;
+				}
+
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
+
+					nodo.coste += 5;
+				}
+				
+				if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
+
+					nodo.coste += 2;
+				}
+			}
+
+			// Resto casillas
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'S') {
+
+				nodo.coste += 1;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'T') {
+
+				nodo.coste += 1;
+			}
+
+			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'R') {
+
+				nodo.coste += 1;
+			}
+			
+			break;
+
+
+		case actIDLE:
+
+			nodo.coste += 0;
+
+			break;
+	}
+
+
+	return nodo.coste;
+
+}
+
+
+// TODO: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
+nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned char> > mapa){
+	
+	nodeN2 st_result = st;
+	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
+	
+	switch (a)
+	{
+
+		// ACTUALIZAR COSTE DE CADA NODO
+
+		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
+			
+			// Actualizar nodo jugador anda
+			sig_ubicacion = NextCasilla(st.st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
+					
+				st_result.st.jugador = sig_ubicacion;
+			}
+
+			st_result.coste = actualizarCosteNodo(actWALK, st_result, mapa);
+			
+			break;
+		
+
+		case actRUN: //si prox 2 casillas son transitables y no está ocupada por el colaborador
+			
+			// Actualizar nodo jugador corre
+			sig_ubicacion = NextCasilla(st.st.jugador);
+			
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
+
+				sig_ubicacion2 = NextCasilla(sig_ubicacion);
+
+				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.colaborador.f and sig_ubicacion2.c == st.st.colaborador.c)){
+						
+					st_result.st.jugador = sig_ubicacion2;
+				}
+			}
+
+			st_result.coste = actualizarCosteNodo(actRUN, st_result, mapa);		
+				
+			break;
+
+		
+		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
+			
+			// Actualizar nodo jugador gira izquierda
+			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+6)%8);
+			st_result.coste = actualizarCosteNodo(actTURN_L, st_result, mapa);
+
+			break;
+
+
+		case actTURN_SR:
+			
+			// Actualizar nodo jugador gira derecha
+			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+1)%8);
+			st_result.coste = actualizarCosteNodo(actTURN_SR, st_result, mapa);
+
+			break;
+
+		
+		case actIDLE:
+
+			// Actualizar nodo jugador no hace nada
+			st_result.coste = actualizarCosteNodo(actIDLE, st_result, mapa);
+
+			break;
+		
+	}
+	
+	return st_result;
+} 
 
 
 // TODO: Búsqueda en Dijkstra jugador
@@ -1222,133 +1523,167 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 	set<stateN2> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
 	list<Action> plan;
 
-	current_node.st = inicio;
-	abiertos.push(current_node);
+	// De primeras no puedo situar ni a jugador ni a colaborador en una casilla no transitable
+	if (CasillaTransitable(inicio.jugador, mapa) and CasillaTransitable(inicio.colaborador, mapa)) {
 
-	bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
+		current_node.st = inicio;
+		current_node.coste = 0;
 
-	// Proceso de búsqueda
-	while (!abiertos.empty() and !SolutionFound) {
+		abiertos.push(current_node);
 
-		// Si no ha habido solución, sacas el nodo de abiertos y lo introduces en cerrados
-		abiertos.pop();
-		cerrados.insert(current_node.st);
+		bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
 
-		// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
-		// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
- 
-		// GENERAR HIJOS JUGADOR
-		if (!SolutionFound) {
+		// Proceso de búsqueda
+		while (!abiertos.empty() and !SolutionFound) {
 
-			// Generar hijo actWALK
-			nodeN2 child_walk = current_node; 
-			child_walk.st = apply2(actWALK, current_node.st, mapa);
-			
-			// Guardar la accion en secuencia
-			child_walk.secuencia.push_back(actWALK);
+			// DIJKSTRA: solo cuando se saca un nuevo nodo de abierto o antes de entrar en cerrados hay solucion
 
-			if (cerrados.find(child_walk.st) == cerrados.end()){
-				
-				abiertos.push(child_walk);
+			// Si no ha habido solución, sacas el nodo de abiertos y antes de entrar en cerrados compruebas si hay solucion
+			abiertos.pop();
+
+			if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+
+				SolutionFound = true;
 			}
-		}
-		
-		
-		if (!SolutionFound){
-			
-			// Generar hijo actRUN
-			nodeN2 child_run = current_node;
-			child_run.st = apply2(actRUN, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_run.secuencia.push_back(actRUN);
 
-			if (cerrados.find(child_run.st) == cerrados.end()){
+			cerrados.insert(current_node.st);
+
+			// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+			// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
+
+			/* OPERACIONES A REALIZAR
+
+				* Añadir nueva estructura y estado e inicializarlos bien
+				* Modificar apply convenientemente
+				* Modificar dijstra convenientemente
+			*/
+
+	
+			// GENERAR HIJOS JUGADOR
+			if (!SolutionFound) {
+
+				// Generar hijo actWALK
+				nodeN2 child_walk = current_node; 
+				child_walk = apply2(actWALK, current_node, mapa);
 				
-				abiertos.push(child_run);
+				// Guardar la accion en secuencia
+				child_walk.secuencia.push_back(actWALK);
+
+				if (cerrados.find(child_walk.st) == cerrados.end()){
+					
+					abiertos.push(child_walk);
+				}
 			}
-		}
-
-		
-		if (!SolutionFound){
 			
-			// Generar hijo actTURN_L
-			nodeN2 child_turnl = current_node; 
-			child_turnl.st = apply2(actTURN_L, current_node.st, mapa);
-
-			// Guardar accion en secuencia
-			child_turnl.secuencia.push_back(actTURN_L);
-
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnl.st) == cerrados.end()){
+			
+			if (!SolutionFound){
 				
-				abiertos.push(child_turnl);
-			}		
-			
-			// Generar hijo actTURN_SR
-			nodeN2 child_turnsr = current_node;
-			child_turnsr.st = apply2(actTURN_SR, current_node.st, mapa);
-			
-			// Guardar accion en secuencia
-			child_turnsr.secuencia.push_back(actTURN_SR);
-
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_turnsr.st) == cerrados.end()){
+				// Generar hijo actRUN
+				nodeN2 child_run = current_node;
+				child_run = apply2(actRUN, current_node, mapa);
 				
-				abiertos.push(child_turnsr);
-			}		
-		}
+				// Guardar accion en secuencia
+				child_run.secuencia.push_back(actRUN);
 
+				if (cerrados.find(child_run.st) == cerrados.end()){
+					
+					abiertos.push(child_run);
+				}
+			}
 
-		if (!SolutionFound) {
-
-			// Generar hijo actIDLE
-			nodeN2 child_idle = current_node; 
-			child_idle.st = apply2(actIDLE, current_node.st, mapa);
-
-			// Guardar accion en secuencia
-			child_idle.secuencia.push_back(actIDLE);
 			
-			// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
-			if (cerrados.find(child_idle.st) == cerrados.end()){
+			if (!SolutionFound){
 				
-				abiertos.push(child_idle);
-			}	
-		}
+				// Generar hijo actTURN_L
+				nodeN2 child_turnl = current_node; 
+				child_turnl = apply2(actTURN_L, current_node, mapa);
+
+				// Guardar accion en secuencia
+				child_turnl.secuencia.push_back(actTURN_L);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnl.st) == cerrados.end()){
+					
+					abiertos.push(child_turnl);
+				}		
+				
+				// Generar hijo actTURN_SR
+				nodeN2 child_turnsr = current_node;
+				child_turnsr = apply2(actTURN_SR, current_node, mapa);
+				
+				// Guardar accion en secuencia
+				child_turnsr.secuencia.push_back(actTURN_SR);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnsr.st) == cerrados.end()){
+					
+					abiertos.push(child_turnsr);
+				}		
+			}
 
 
-		// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
-		if (!SolutionFound and !abiertos.empty()) {
+			if (!SolutionFound) {
 
-			current_node = abiertos.top();
+				// Generar hijo actIDLE
+				nodeN2 child_idle = current_node; 
+				child_idle = apply2(actIDLE, current_node, mapa);
 
-			while (!abiertos.empty() and cerrados.find(current_node.st) != cerrados.end()) {
+				// Guardar accion en secuencia
+				child_idle.secuencia.push_back(actIDLE);
+				
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_idle.st) == cerrados.end()){
+					
+					abiertos.push(child_idle);
+				}	
+			}
 
-				abiertos.pop();
 
-				if (!abiertos.empty()) {
+			// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+			if (!SolutionFound and !abiertos.empty()) {
 
-					current_node = abiertos.top();
+				current_node = abiertos.top();
+
+				while (!abiertos.empty() and cerrados.find(current_node.st) != cerrados.end()) {
+
+					abiertos.pop();
+
+					if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+
+						SolutionFound = true;
+					}
+
+					if (!abiertos.empty()) {
+
+						current_node = abiertos.top();
+					}
 				}
 			}
 		}
-	}
 
-	// Si ha encontrado solución guardar secuencia y pintarlo
-	if (SolutionFound) {
+		// Si ha encontrado solución guardar secuencia y pintarlo
+		if (SolutionFound) {
 
-		plan = current_node.secuencia;
+			plan = current_node.secuencia;
 
-		cout << "Encontrado un plan" << endl;
-		PintaPlan(plan);
+			cout << "Encontrado un plan" << endl;
+			PintaPlan(plan);
+		}
+
+	} else {
+
+		cerr << "Casilla no transitable" << endl;
+		exit(EXIT_FAILURE);
 	}
 
 	return plan;
 }
 
 
+
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// FUNCIÓN THINK
+// FUNCIÓN PRINCIPAL THINK
 
 
 // Devuelve la siguiente acción a realizar
@@ -1383,7 +1718,6 @@ Action ComportamientoJugador::think(Sensores sensores)
 			c_state2.ultimaOrdenColaborador = act_CLB_STOP; 
 			c_state2.tengo_bikini = false;
 			c_state2.tengo_zapatillas = false;
-			
 			
 			// Inicialización variable de estado goal
 			goal.f = sensores.destinoF;
