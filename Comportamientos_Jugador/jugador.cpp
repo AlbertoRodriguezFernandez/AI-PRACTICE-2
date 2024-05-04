@@ -266,7 +266,7 @@ bool Find(const stateN0 &item, const list<nodeN0> &lista){
 
 
 // Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
-stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char> > mapa){
+stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned char> > &mapa){
 	
 	stateN0 st_result = st;
 	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
@@ -1169,7 +1169,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 
 
 // TODO: Calcula el coste acumulado de un nodo
-int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsigned char> > mapa) {
+int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsigned char> > &mapa) {
 
 	// Consumo influye el tipo de terreno, la acción aplicada y si se está en posesión o no del objeto que permite reducir el consumo
 
@@ -1339,7 +1339,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 
 // TODO: Devuelve el estado que se genera si el agente puede avanzar, si no, se devuelve con el que ya venía
-nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned char> > mapa){
+nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned char> > &mapa){
 	
 	nodeN2 st_result = st;
 	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
