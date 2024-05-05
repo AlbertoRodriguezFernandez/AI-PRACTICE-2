@@ -1168,7 +1168,7 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 // NIVEL 2
 
 
-// TODO: Calcula el coste acumulado de un nodo
+// Calcula el coste acumulado de un nodo
 int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsigned char> > &mapa) {
 
 	// Consumo influye el tipo de terreno, la acción aplicada y si se está en posesión o no del objeto que permite reducir el consumo
@@ -1457,8 +1457,179 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 } 
 
 
-// TODO: Búsqueda en Dijkstra jugador
+// Búsqueda en Dijkstra jugador
 list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+
+	nodeN2 current_node;
+	priority_queue<nodeN2> abiertos; // frontier
+	set<stateN2> cerrados; // explored --> la búsqueda de nodos se hace sobre cerrados y la estructura set es más eficiente que la estructura list
+	list<Action> plan;
+
+	// De primeras no puedo situar ni a jugador ni a colaborador en una casilla no transitable
+	if (CasillaTransitable(inicio.jugador, mapa) and CasillaTransitable(inicio.colaborador, mapa)) {
+
+		current_node.st = inicio;
+		current_node.coste = 0;
+
+		abiertos.push(current_node);
+
+		bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
+
+		// Proceso de búsqueda
+		while (!abiertos.empty() and !SolutionFound) {
+
+			// DIJKSTRA: solo cuando se saca un nuevo nodo de abierto o antes de entrar en cerrados hay solucion
+
+			// Si no ha habido solución, sacas el nodo de abiertos y antes de entrar en cerrados compruebas si hay solucion
+			abiertos.pop();
+			
+			if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+
+				SolutionFound = true;
+			}
+			
+			cerrados.insert(current_node.st);
+
+			// GENERAR DESCENDIENTES DEL ESTADO ACTUAL
+			// if(!SolutionFound) --> Condición para que no se generen estados hijos si ya se encontro la solucion
+
+			/* OPERACIONES A REALIZAR
+
+				* Añadir nueva estructura y estado e inicializarlos bien
+				* Modificar apply convenientemente
+				* Modificar dijstra convenientemente
+			*/
+
+	
+			// GENERAR HIJOS JUGADOR
+			if (!SolutionFound) {
+
+				// Generar hijo actWALK
+				nodeN2 child_walk = current_node; 
+				child_walk = apply2(actWALK, current_node, mapa);
+				
+				// Guardar la accion en secuencia
+				child_walk.secuencia.push_back(actWALK);
+
+				if (cerrados.find(child_walk.st) == cerrados.end()){
+					
+					abiertos.push(child_walk);
+				}
+			}
+			
+			
+			if (!SolutionFound){
+				
+				// Generar hijo actRUN
+				nodeN2 child_run = current_node;
+				child_run = apply2(actRUN, current_node, mapa);
+				
+				// Guardar accion en secuencia
+				child_run.secuencia.push_back(actRUN);
+
+				if (cerrados.find(child_run.st) == cerrados.end()){
+					
+					abiertos.push(child_run);
+				}
+			}
+
+			
+			if (!SolutionFound){
+				
+				// Generar hijo actTURN_L
+				nodeN2 child_turnl = current_node; 
+				child_turnl = apply2(actTURN_L, current_node, mapa);
+
+				// Guardar accion en secuencia
+				child_turnl.secuencia.push_back(actTURN_L);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnl.st) == cerrados.end()){
+					
+					abiertos.push(child_turnl);
+				}		
+				
+				// Generar hijo actTURN_SR
+				nodeN2 child_turnsr = current_node;
+				child_turnsr = apply2(actTURN_SR, current_node, mapa);
+				
+				// Guardar accion en secuencia
+				child_turnsr.secuencia.push_back(actTURN_SR);
+
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_turnsr.st) == cerrados.end()){
+					
+					abiertos.push(child_turnsr);
+				}		
+			}
+
+
+			if (!SolutionFound) {
+
+				// Generar hijo actIDLE
+				nodeN2 child_idle = current_node; 
+				child_idle = apply2(actIDLE, current_node, mapa);
+
+				// Guardar accion en secuencia
+				child_idle.secuencia.push_back(actIDLE);
+				
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_idle.st) == cerrados.end()){
+					
+					abiertos.push(child_idle);
+				}	
+			}
+
+
+			// Si no se ha encontrado solución (ninguno de los descendientes es solucion) y sigue habiendo nodos en abiertos, el estado actual será el siguiente nodo de abiertos
+			if (!SolutionFound and !abiertos.empty()) {
+
+				current_node = abiertos.top();
+
+				while (!abiertos.empty() and cerrados.find(current_node.st) != cerrados.end()) {
+
+					abiertos.pop();
+
+					if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+
+						SolutionFound = true;
+					}
+
+					if (!abiertos.empty()) {
+
+						current_node = abiertos.top();
+					}
+				}
+			}
+		}
+
+		// Si ha encontrado solución guardar secuencia y pintarlo
+		if (SolutionFound) {
+
+			plan = current_node.secuencia;
+
+			cout << "Encontrado un plan" << endl;
+			PintaPlan(plan);
+		}
+
+	} else {
+
+		cerr << "Casilla no transitable" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	return plan;
+}
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// NIVEL 3
+
+
+// TODO: Búsqueda en A* Colaborador
+list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
 	nodeN2 current_node;
 	priority_queue<nodeN2> abiertos; // frontier
@@ -1677,7 +1848,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 				case 2: plan = DijkstraSoloJugador(c_state2, goal, mapaResultado);
 						break;
 
-				case 3: cout << "Pendiente 3" << endl;
+				case 3: plan = AEstrellaSoloColaborador(c_state2, goal, mapaResultado);
 						break;
 
 				case 4: cout << "Pendiente 4" << endl;

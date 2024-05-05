@@ -28,7 +28,7 @@ struct stateN0{
 };
 
 
-// Estado NIVELES 2, 3
+// TODO: Estado NIVELES 2, 3
 struct stateN2{
 
   ubicacion jugador;
@@ -98,12 +98,13 @@ struct nodeN0{
 };
 
 
-// Nodo NIVELES 2, 3: almacenar en cada nodo la secuencia de acciones hasta el momento
+// TODO: Nodo NIVELES 2, 3: almacenar en cada nodo la secuencia de acciones hasta el momento
 struct nodeN2{
  
   stateN2 st; // Estado actual
   list<Action> secuencia; // Secuencia de acciones
   int coste; // Coste acumulado del nodo
+  int heuristica; // Heuristica para llegar al nodo objetivo
 
   bool operator==(const nodeN2 &n) const {
     
@@ -112,7 +113,8 @@ struct nodeN2{
 
   bool operator<(const nodeN2 &b)  const {
 
-    return coste > b.coste; // Ordenar la priority_queue de menor a mayor coste
+
+    return (coste + heuristica) > (b.coste + b.heuristica); // Ordenar la priority_queue de menor a mayor coste
     
   }
 };
