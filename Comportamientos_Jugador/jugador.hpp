@@ -34,8 +34,10 @@ struct stateN2{
   ubicacion jugador;
   ubicacion colaborador;
   Action ultimaOrdenColaborador; 
-  bool tengo_zapatillas;
-  bool tengo_bikini;
+  bool tengo_zapatillas_jugador;
+  bool tengo_zapatillas_colaborador;
+  bool tengo_bikini_jugador;
+  bool tengo_bikini_colaborador;
 
 
   bool operator==(const stateN2 &x) const {
@@ -45,8 +47,10 @@ struct stateN2{
         colaborador.f == x.colaborador.f and 
         colaborador.c == x.colaborador.c and
         ultimaOrdenColaborador == x.ultimaOrdenColaborador and 
-        tengo_zapatillas == x.tengo_zapatillas and 
-        tengo_bikini == x.tengo_bikini) {
+        tengo_zapatillas_jugador == x.tengo_zapatillas_jugador and
+        tengo_zapatillas_colaborador == x.tengo_zapatillas_colaborador and 
+        tengo_bikini_jugador == x.tengo_bikini_jugador and
+        tengo_bikini_colaborador == x.tengo_bikini_colaborador) {
 
       return true;
     
@@ -66,8 +70,10 @@ struct stateN2{
             (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c < b.colaborador.c) ||
             (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula < b.colaborador.brujula) ||
             (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador < b.ultimaOrdenColaborador) ||
-            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas < b.tengo_zapatillas) ||
-            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas == b.tengo_zapatillas and tengo_bikini < b.tengo_bikini);
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas_jugador < b.tengo_zapatillas_jugador) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas_jugador == b.tengo_zapatillas_jugador and tengo_zapatillas_colaborador < b.tengo_zapatillas_colaborador) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas_jugador == b.tengo_zapatillas_jugador and tengo_zapatillas_colaborador == b.tengo_zapatillas_colaborador and tengo_bikini_jugador < b.tengo_bikini_jugador) ||
+            (jugador.f == b.jugador.f and jugador.c == b.jugador.c and jugador.brujula == b.jugador.brujula and colaborador.f == b.colaborador.f and colaborador.c == b.colaborador.c and colaborador.brujula == b.colaborador.brujula and ultimaOrdenColaborador == b.ultimaOrdenColaborador and tengo_zapatillas_jugador == b.tengo_zapatillas_jugador and tengo_zapatillas_colaborador == b.tengo_zapatillas_colaborador and tengo_bikini_jugador == b.tengo_bikini_jugador and tengo_bikini_colaborador < b.tengo_bikini_colaborador);
             
   }
 };

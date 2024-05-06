@@ -715,7 +715,7 @@ list<Action> AnchuraSoloJugador_V3(const stateN0 &inicio, const ubicacion &final
 // NIVEL 1
 
 
-// Función para ver al colaborador
+// Función para ver al colaborador con el estado niveles 0,1
 bool VeoColaborador(const stateN0 &st) {
 
 	bool veocolaborador = false;
@@ -1168,10 +1168,10 @@ list<Action> AnchuraSoloColaborador(const stateN0 &inicio, const ubicacion &fina
 // NIVEL 2
 
 
-// Calcula el coste acumulado de un nodo
+// TODO: Calcula el coste acumulado de un nodo
 int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsigned char> > &mapa) {
 
-	// Consumo influye el tipo de terreno, la acción aplicada y si se está en posesión o no del objeto que permite reducir el consumo
+	// Consumo influye el tipo de terreno, la acción aplicada y si se está en posesión o no del objeto que permite reducir el consumo y del AGENTE
 
 	// Comprobar en que terreno estoy y si dispongo de objetos: B, A, S, T, K, D, X
 	// Comprobar los costes de cada accion
@@ -1181,11 +1181,92 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 	switch (a)
 	{
 
+		// Casos del colaborador
+		case act_CLB_WALK:
+
+			if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'B') {
+
+				if (nodo.st.tengo_zapatillas_colaborador) {
+
+					nodo.coste += 15;
+				
+				} else {
+
+					nodo.coste += 50;
+				}
+			
+			} else if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini_colaborador) {
+
+					nodo.coste += 10;
+				
+				} else {
+
+					nodo.coste += 100;
+				}
+			
+			} else if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'T') {
+
+				nodo.coste += 2;
+			
+			} else {
+
+				nodo.coste += 1;
+			}
+
+			break;
+			
+
+		case act_CLB_TURN_SR:
+
+			if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'B') {
+
+				if (nodo.st.tengo_zapatillas_colaborador) {
+
+					nodo.coste += 1;
+				
+				} else {
+
+					nodo.coste += 5;
+				}
+			
+			} else if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'A') {
+
+				if (nodo.st.tengo_bikini_colaborador) {
+
+					nodo.coste += 2;
+				
+				} else {
+
+					nodo.coste += 10;
+				}
+			
+			} else if (mapa[nodo.st.colaborador.f][nodo.st.colaborador.c] == 'T') {
+
+				nodo.coste += 1;
+			
+			} else {
+
+				nodo.coste += 1;
+			}
+
+			break;
+
+
+		case act_CLB_STOP:
+
+			nodo.coste += 0;
+
+			break;
+
+
+		// Casos del jugador
 		case actWALK:
 
 			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (nodo.st.tengo_zapatillas) {
+				if (nodo.st.tengo_zapatillas_jugador) {
 
 					nodo.coste += 15;
 				
@@ -1196,7 +1277,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 			
 			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
 
-				if (nodo.st.tengo_bikini) {
+				if (nodo.st.tengo_bikini_jugador) {
 
 					nodo.coste += 10;
 				
@@ -1221,7 +1302,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (nodo.st.tengo_zapatillas) {
+				if (nodo.st.tengo_zapatillas_jugador) {
 
 					nodo.coste += 25;
 				
@@ -1232,7 +1313,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 			
 			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
 
-				if (nodo.st.tengo_bikini) {
+				if (nodo.st.tengo_bikini_jugador) {
 
 					nodo.coste += 15;
 				
@@ -1257,7 +1338,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (nodo.st.tengo_zapatillas) {
+				if (nodo.st.tengo_zapatillas_jugador) {
 
 					nodo.coste += 1;
 				
@@ -1268,7 +1349,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 			
 			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
 
-				if (nodo.st.tengo_bikini) {
+				if (nodo.st.tengo_bikini_jugador) {
 
 					nodo.coste += 5;
 				
@@ -1293,7 +1374,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 
 			if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'B') {
 
-				if (nodo.st.tengo_zapatillas) {
+				if (nodo.st.tengo_zapatillas_jugador) {
 
 					nodo.coste += 1;
 				
@@ -1304,7 +1385,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 			
 			} else if (mapa[nodo.st.jugador.f][nodo.st.jugador.c] == 'A') {
 
-				if (nodo.st.tengo_bikini) {
+				if (nodo.st.tengo_bikini_jugador) {
 
 					nodo.coste += 2;
 				
@@ -1349,6 +1430,57 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 
 		// ACTUALIZAR COSTE DE CADA NODO
 
+		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
+		case act_CLB_WALK:    
+
+			st_result.st.ultimaOrdenColaborador = act_CLB_WALK;
+
+			st_result.coste = actualizarCosteNodo(act_CLB_WALK, st_result, mapa);
+		
+			sig_ubicacion = NextCasilla(st.st.colaborador);
+
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.jugador.f and sig_ubicacion.c == st.st.jugador.c)) {
+
+				st_result.st.colaborador = sig_ubicacion;
+			}
+
+			// Estado (bikini y zapatillas)
+			if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'K' && !st_result.st.tengo_bikini_jugador) {
+
+				st_result.st.tengo_zapatillas_colaborador = false;
+				st_result.st.tengo_bikini_colaborador = true;
+			}
+
+			if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'D' && !st_result.st.tengo_zapatillas_jugador) {
+
+				st_result.st.tengo_zapatillas_colaborador = true;
+				st_result.st.tengo_bikini_colaborador = false;
+			}
+
+			break;
+
+
+		case act_CLB_TURN_SR:   
+
+			st_result.st.ultimaOrdenColaborador = act_CLB_TURN_SR;
+
+			st_result.coste = actualizarCosteNodo(act_CLB_TURN_SR, st_result, mapa);
+
+			st_result.st.colaborador.brujula = static_cast<Orientacion>((st_result.st.colaborador.brujula + 1) % 8);
+			
+			break;
+
+
+		case act_CLB_STOP:
+
+			st_result.st.ultimaOrdenColaborador = act_CLB_STOP;
+
+			st_result.coste = actualizarCosteNodo(act_CLB_STOP, st_result, mapa);
+
+			break;
+
+
+		// CASOS DEL JUGADOR (modificar ambos estados tanto jugador como colaborador)
 		case actWALK: //si prox casilla es transitable y no está ocupada por el colaborador
 			
 			// Actualizar nodo jugador anda
@@ -1365,16 +1497,16 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 			}
 
 			// Estado (bikini y zapatillas)
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K' && !st_result.st.tengo_bikini_colaborador) {
 
-				st_result.st.tengo_zapatillas = false;
-				st_result.st.tengo_bikini = true;
+				st_result.st.tengo_zapatillas_jugador = false;
+				st_result.st.tengo_bikini_jugador = true;
 			}
 
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D' && !st_result.st.tengo_zapatillas_colaborador) {
 
-				st_result.st.tengo_zapatillas = true;
-				st_result.st.tengo_bikini = false;
+				st_result.st.tengo_zapatillas_jugador = true;
+				st_result.st.tengo_bikini_jugador = false;
 			}
 
 			break;
@@ -1401,16 +1533,16 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 			}	
 
 			// Estado (bikini y zapatillas)
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K' && !st_result.st.tengo_bikini_colaborador) {
 
-				st_result.st.tengo_zapatillas = false;
-				st_result.st.tengo_bikini = true;
+				st_result.st.tengo_zapatillas_jugador = false;
+				st_result.st.tengo_bikini_jugador = true;
 			}
 
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D' && !st_result.st.tengo_zapatillas_colaborador) {
 
-				st_result.st.tengo_zapatillas = true;
-				st_result.st.tengo_bikini = false;
+				st_result.st.tengo_zapatillas_jugador = true;
+				st_result.st.tengo_bikini_jugador = false;
 			}
 				
 			break;
@@ -1628,6 +1760,216 @@ list<Action> DijkstraSoloJugador(const stateN2 &inicio, const ubicacion &final, 
 // NIVEL 3
 
 
+// TODO: Sobrecarga de la función VeoColaborador para ver al colaborador con el estado niveles 2,3
+bool VeoColaborador(const stateN2 &st) {
+
+	bool veocolaborador = false;
+
+	// Ver si en las casillas delanteras tengo al colaborador y si es en rango correcto
+	if (st.jugador.f >= 0 and st.jugador.f <= 99 and st.jugador.c >= 0 and st.jugador.c <= 99 and 
+		st.colaborador.f >= 0 and st.colaborador.f <= 99 and st.colaborador.c >= 0 and st.colaborador.c <= 99 ) {
+
+		switch (st.jugador.brujula)
+		{
+			
+			case norte: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+				    (st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case noreste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case este: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -1)  ||
+				    (st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -1)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1)  ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2)  ||
+					(st.jugador.f - st.colaborador.f == 3  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -3)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case sureste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == -3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case sur: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == -1) ||
+				    (st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == -1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case suroeste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 0) ||
+				    (st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 0) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 0) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 3)){
+
+					veocolaborador = true;
+				}
+				
+				break;
+
+			case oeste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 1) ||
+				    (st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 1) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == 2) ||
+					(st.jugador.f - st.colaborador.f == -3 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -2 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == -1 && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 0  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 1  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 2  && st.jugador.c - st.colaborador.c == 3) ||
+					(st.jugador.f - st.colaborador.f == 3  && st.jugador.c - st.colaborador.c == 3)){
+
+					veocolaborador = true;
+				}
+
+				break;
+
+			case noroeste: // acabado
+
+				if ((st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 0)  ||
+				    (st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 0)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 1 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 2 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 3 && st.jugador.c - st.colaborador.c == 3)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 1)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 2)  ||
+					(st.jugador.f - st.colaborador.f == 0 && st.jugador.c - st.colaborador.c == 3)){
+
+					veocolaborador = true;
+				}
+				
+				break;
+		}
+	}
+
+	return veocolaborador;
+}
+
+
+// TODO: Funcion que calcula la heuristica (distancia del nodo al objetivo)
+int costeHeuristica(const nodeN2 &nodo, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+
+	// Distancia es el máximo entre diferencias de filas y columnas
+
+}
+
+
 // TODO: Búsqueda en A* Colaborador
 list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
 
@@ -1641,10 +1983,11 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 
 		current_node.st = inicio;
 		current_node.coste = 0;
+		current_node.heuristica = 0;
 
 		abiertos.push(current_node);
 
-		bool SolutionFound = (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c);
+		bool SolutionFound = (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c);
 
 		// Proceso de búsqueda
 		while (!abiertos.empty() and !SolutionFound) {
@@ -1654,7 +1997,7 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 			// Si no ha habido solución, sacas el nodo de abiertos y antes de entrar en cerrados compruebas si hay solucion
 			abiertos.pop();
 			
-			if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+			if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
 
 				SolutionFound = true;
 			}
@@ -1666,10 +2009,72 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 
 			/* OPERACIONES A REALIZAR
 
-				* Añadir nueva estructura y estado e inicializarlos bien
+				* Mofificar estado con zapatillas y bikini para ambos agentes e inicializarlos bien
+				* Modificar nodo con heuristica  e inicializarlo bien
 				* Modificar apply convenientemente
-				* Modificar dijstra convenientemente
+				* Modificar a* convenientemente
+				* Modificar actualizar coste
+				* Implementar metodo costeHeuristica
+				* Sobrecarga funcion VeoColaborador
 			*/
+
+			// GENERAR HIJOS COLABORADOR
+			if (VeoColaborador(current_node.st)) {
+
+				// Generar hijo act_CLB_WALK
+				nodeN2 child_clb_walk = current_node;
+				child_clb_walk = apply2(act_CLB_WALK, current_node, mapa);
+
+				// Guardar la acción en secuencia
+				child_clb_walk.secuencia.push_back(act_CLB_WALK);
+
+				// Heuristica
+			
+				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+				if (cerrados.find(child_clb_walk.st) == cerrados.end()){
+					
+					abiertos.push(child_clb_walk);
+				}
+
+
+				if (!SolutionFound) {
+
+					// Generar hijo act_CLB_TURN_SR
+					nodeN2 child_clb_turnsr = current_node;
+					child_clb_turnsr = apply2(act_CLB_TURN_SR, current_node, mapa);
+				
+					// Guardar accion en secuencia
+					child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
+
+					// Heuristica
+
+					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+					if (cerrados.find(child_clb_turnsr.st) == cerrados.end()){
+						
+						abiertos.push(child_clb_turnsr);
+					}
+				}
+
+
+				if (!SolutionFound and (current_node.st.ultimaOrdenColaborador == act_CLB_WALK or current_node.st.ultimaOrdenColaborador == act_CLB_TURN_SR)) {
+
+					// Generar hijo act_CLB_STOP si la ultima fue andar o girar
+					nodeN2 child_clb_stop= current_node;
+					child_clb_stop = apply2(act_CLB_STOP, current_node, mapa);
+					
+					// Guardar accion en secuencia
+					child_clb_stop.secuencia.push_back(act_CLB_STOP);
+
+					// Heuristica
+
+					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
+					if (cerrados.find(child_clb_stop.st) == cerrados.end()){
+						
+						abiertos.push(child_clb_stop);
+					}
+				}
+
+			}
 
 	
 			// GENERAR HIJOS JUGADOR
@@ -1681,6 +2086,8 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				
 				// Guardar la accion en secuencia
 				child_walk.secuencia.push_back(actWALK);
+
+				// Heuristica
 
 				if (cerrados.find(child_walk.st) == cerrados.end()){
 					
@@ -1698,6 +2105,8 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				// Guardar accion en secuencia
 				child_run.secuencia.push_back(actRUN);
 
+				// Heuristica
+
 				if (cerrados.find(child_run.st) == cerrados.end()){
 					
 					abiertos.push(child_run);
@@ -1714,6 +2123,8 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				// Guardar accion en secuencia
 				child_turnl.secuencia.push_back(actTURN_L);
 
+				// Heuristica
+
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_turnl.st) == cerrados.end()){
 					
@@ -1726,6 +2137,8 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				
 				// Guardar accion en secuencia
 				child_turnsr.secuencia.push_back(actTURN_SR);
+
+				// Heuristica
 
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_turnsr.st) == cerrados.end()){
@@ -1743,6 +2156,8 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 
 				// Guardar accion en secuencia
 				child_idle.secuencia.push_back(actIDLE);
+
+				// Heuristica
 				
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_idle.st) == cerrados.end()){
@@ -1761,7 +2176,7 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 
 					abiertos.pop();
 
-					if (current_node.st.jugador.f == final.f and current_node.st.jugador.c == final.c) {
+					if (current_node.st.colaborador.f == final.f and current_node.st.colaborador.c == final.c) {
 
 						SolutionFound = true;
 					}
@@ -1829,8 +2244,10 @@ Action ComportamientoJugador::think(Sensores sensores)
 			c_state2.colaborador.c = sensores.CLBposC;
 			c_state2.colaborador.brujula = sensores.CLBsentido;
 			c_state2.ultimaOrdenColaborador = act_CLB_STOP; 
-			c_state2.tengo_bikini = false;
-			c_state2.tengo_zapatillas = false;
+			c_state2.tengo_zapatillas_jugador = false;
+			c_state2.tengo_zapatillas_colaborador = false;
+			c_state2.tengo_bikini_jugador = false;
+			c_state2.tengo_bikini_colaborador = false;
 			
 			// Inicialización variable de estado goal
 			goal.f = sensores.destinoF;
@@ -1883,6 +2300,8 @@ Action ComportamientoJugador::think(Sensores sensores)
 
 	return accion;
 }
+
+
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
