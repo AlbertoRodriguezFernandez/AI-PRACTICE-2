@@ -119,7 +119,6 @@ struct nodeN2{
 
   bool operator<(const nodeN2 &b)  const {
 
-
     return (coste + heuristica) > (b.coste + b.heuristica); // Ordenar la priority_queue de menor a mayor coste
     
   }

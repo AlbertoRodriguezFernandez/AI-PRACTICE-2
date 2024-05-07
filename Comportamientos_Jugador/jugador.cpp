@@ -6,6 +6,7 @@
 #include <set>
 #include <stack>
 #include <queue>
+#include <algorithm>
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1423,7 +1424,7 @@ int actualizarCosteNodo(const Action &a, nodeN2 &nodo, const vector<vector<unsig
 nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned char> > &mapa){
 	
 	nodeN2 st_result = st;
-	ubicacion sig_ubicacion, sig_ubicacion2; // sig_ubicacion2 es para el caso de actRUN
+	ubicacion sig_ubicacion, sig_ubicacion2, sig_ubicacion3; // sig_ubicacion2 es para el caso de actRUN
 	
 	switch (a)
 	{
@@ -1433,28 +1434,28 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
 		case act_CLB_WALK:    
 
-			st_result.st.ultimaOrdenColaborador = act_CLB_WALK;
-
-			st_result.coste = actualizarCosteNodo(act_CLB_WALK, st_result, mapa);
-		
 			sig_ubicacion = NextCasilla(st.st.colaborador);
 
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.jugador.f and sig_ubicacion.c == st.st.jugador.c)) {
 
+				st_result.st.ultimaOrdenColaborador = act_CLB_WALK;
+				
+				st_result.coste = actualizarCosteNodo(act_CLB_WALK, st_result, mapa);
+				
 				st_result.st.colaborador = sig_ubicacion;
-			}
 
-			// Estado (bikini y zapatillas)
-			if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'K' && !st_result.st.tengo_bikini_jugador) {
+				// Estado (bikini y zapatillas)
+				if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'K') {
 
-				st_result.st.tengo_zapatillas_colaborador = false;
-				st_result.st.tengo_bikini_colaborador = true;
-			}
+					st_result.st.tengo_zapatillas_colaborador = false;
+					st_result.st.tengo_bikini_colaborador = true;
+				}
 
-			if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'D' && !st_result.st.tengo_zapatillas_jugador) {
+				if (mapa[st_result.st.colaborador.f][st_result.st.colaborador.c] == 'D') {
 
-				st_result.st.tengo_zapatillas_colaborador = true;
-				st_result.st.tengo_bikini_colaborador = false;
+					st_result.st.tengo_zapatillas_colaborador = true;
+					st_result.st.tengo_bikini_colaborador = false;
+				}
 			}
 
 			break;
@@ -1485,28 +1486,35 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 			
 			// Actualizar nodo jugador anda
 
-			// Coste
-			st_result.coste = actualizarCosteNodo(actWALK, st_result, mapa);
-
 			// Estado (ubicacion)
 			sig_ubicacion = NextCasilla(st.st.jugador);
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
 					
-				st_result.st.jugador = sig_ubicacion;
-			}
+				if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
+				    st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or act_CLB_STOP) {
 
-			// Estado (bikini y zapatillas)
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K' && !st_result.st.tengo_bikini_colaborador) {
+					// Coste
+					st_result.coste = actualizarCosteNodo(actWALK, st_result, mapa);
 
-				st_result.st.tengo_zapatillas_jugador = false;
-				st_result.st.tengo_bikini_jugador = true;
-			}
+					st_result.st.jugador = sig_ubicacion;
+					
+					st_result = apply2(st_result.st.ultimaOrdenColaborador, st_result, mapa);
 
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D' && !st_result.st.tengo_zapatillas_colaborador) {
+					// Estado (bikini y zapatillas)
+					if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
 
-				st_result.st.tengo_zapatillas_jugador = true;
-				st_result.st.tengo_bikini_jugador = false;
+						st_result.st.tengo_zapatillas_jugador = false;
+						st_result.st.tengo_bikini_jugador = true;
+					}
+
+					if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+
+						st_result.st.tengo_zapatillas_jugador = true;
+						st_result.st.tengo_bikini_jugador = false;
+					}
+				}
 			}
 
 			break;
@@ -1516,11 +1524,9 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 			
 			// Actualizar nodo jugador corre
 
-			// Coste
-			st_result.coste = actualizarCosteNodo(actRUN, st_result, mapa);
-
 			// Estado (ubicacion)
 			sig_ubicacion = NextCasilla(st.st.jugador);
+			sig_ubicacion3 = NextCasilla(st.st.colaborador);
 			
 			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
 
@@ -1528,48 +1534,71 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 
 				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.colaborador.f and sig_ubicacion2.c == st.st.colaborador.c)){
 						
-					st_result.st.jugador = sig_ubicacion2;
+					if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion3, mapa) and !(sig_ubicacion3.f == st.st.jugador.f and sig_ubicacion3.c == st.st.jugador.c) or
+						st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or act_CLB_STOP) {
+
+						// Coste
+						st_result.coste = actualizarCosteNodo(actRUN, st_result, mapa);
+
+						st_result.st.jugador = sig_ubicacion2;
+
+						st_result = apply2(st_result.st.ultimaOrdenColaborador, st_result, mapa);
+
+						// Estado (bikini y zapatillas)
+						if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K') {
+
+							st_result.st.tengo_zapatillas_jugador = false;
+							st_result.st.tengo_bikini_jugador = true;
+						}
+
+						if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D') {
+
+							st_result.st.tengo_zapatillas_jugador = true;
+							st_result.st.tengo_bikini_jugador = false;
+						}
+					}
 				}
 			}	
 
-			// Estado (bikini y zapatillas)
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'K' && !st_result.st.tengo_bikini_colaborador) {
-
-				st_result.st.tengo_zapatillas_jugador = false;
-				st_result.st.tengo_bikini_jugador = true;
-			}
-
-			if (mapa[st_result.st.jugador.f][st_result.st.jugador.c] == 'D' && !st_result.st.tengo_zapatillas_colaborador) {
-
-				st_result.st.tengo_zapatillas_jugador = true;
-				st_result.st.tengo_bikini_jugador = false;
-			}
-				
 			break;
 
 		
 		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
 			
 			// Actualizar nodo jugador gira izquierda
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			// Coste
-			st_result.coste = actualizarCosteNodo(actTURN_L, st_result, mapa);
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
+				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or act_CLB_STOP) {
 
-			// Estado (ubicacion)
-			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+6)%8);
+				// Coste
+				st_result.coste = actualizarCosteNodo(actTURN_L, st_result, mapa);
+
+				// Estado (ubicacion)
+				st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+6)%8);
+
+				st_result = apply2(st_result.st.ultimaOrdenColaborador, st_result, mapa);
+			}
 
 			break;
 
 
 		case actTURN_SR:
-			
+
 			// Actualizar nodo jugador gira derecha
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			// Coste
-			st_result.coste = actualizarCosteNodo(actTURN_SR, st_result, mapa);
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
+				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or act_CLB_STOP) {
 
-			// Estado (ubicacion)
-			st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+1)%8);
+				// Coste
+				st_result.coste = actualizarCosteNodo(actTURN_SR, st_result, mapa);
+
+				// Estado (ubicacion)
+				st_result.st.jugador.brujula = static_cast<Orientacion>((st_result.st.jugador.brujula+1)%8);
+
+				st_result = apply2(st_result.st.ultimaOrdenColaborador, st_result, mapa);
+			}
 
 			break;
 
@@ -1577,10 +1606,16 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actIDLE:
 
 			// Actualizar nodo jugador no hace nada
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			// Coste
-			st_result.coste = actualizarCosteNodo(actIDLE, st_result, mapa);
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
+				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or act_CLB_STOP) {
 
+				// Coste
+				st_result.coste = actualizarCosteNodo(actIDLE, st_result, mapa);
+
+				st_result = apply2(st_result.st.ultimaOrdenColaborador, st_result, mapa);
+			}
 			break;
 		
 	}
@@ -1963,10 +1998,13 @@ bool VeoColaborador(const stateN2 &st) {
 
 
 // TODO: Funcion que calcula la heuristica (distancia del nodo al objetivo)
-int costeHeuristica(const nodeN2 &nodo, const ubicacion &final, const vector<vector<unsigned char>> &mapa) {
+int costeHeuristica(const nodeN2 &nodo, const ubicacion &final) {
 
-	// Distancia es el máximo entre diferencias de filas y columnas
+	// Distancia es el máximo entre diferencias de fila_actual - fila_objetivo y diferencia de columna_actual - columna_objetivo
+	int diferencia_filas = abs(nodo.st.colaborador.f - final.f);
+	int diferencia_cols = abs(nodo.st.colaborador.c - final.c);
 
+	return max(diferencia_filas, diferencia_cols);
 }
 
 
@@ -1984,6 +2022,31 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 		current_node.st = inicio;
 		current_node.coste = 0;
 		current_node.heuristica = 0;
+
+		// Nada mas caer o jugador o colaborador pueden tener objetos
+		if (mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'K') {
+
+			current_node.st.tengo_bikini_jugador = true;
+			current_node.st.tengo_zapatillas_jugador = false;
+		}
+
+		if (mapa[current_node.st.jugador.f][current_node.st.jugador.c] == 'D') {
+
+			current_node.st.tengo_bikini_jugador = false;
+			current_node.st.tengo_zapatillas_jugador = true;
+		}
+
+		if (mapa[current_node.st.colaborador.f][current_node.st.colaborador.c] == 'K') {
+
+			current_node.st.tengo_bikini_colaborador = true;
+			current_node.st.tengo_zapatillas_colaborador = false;
+		}
+
+		if (mapa[current_node.st.colaborador.f][current_node.st.colaborador.c] == 'D') {
+
+			current_node.st.tengo_bikini_colaborador = false;
+			current_node.st.tengo_zapatillas_colaborador = true;
+		}
 
 		abiertos.push(current_node);
 
@@ -2025,10 +2088,11 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				nodeN2 child_clb_walk = current_node;
 				child_clb_walk = apply2(act_CLB_WALK, current_node, mapa);
 
+				// Heuristica
+				child_clb_walk.heuristica = costeHeuristica(child_clb_walk, final);
+
 				// Guardar la acción en secuencia
 				child_clb_walk.secuencia.push_back(act_CLB_WALK);
-
-				// Heuristica
 			
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_clb_walk.st) == cerrados.end()){
@@ -2042,11 +2106,12 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 					// Generar hijo act_CLB_TURN_SR
 					nodeN2 child_clb_turnsr = current_node;
 					child_clb_turnsr = apply2(act_CLB_TURN_SR, current_node, mapa);
-				
-					// Guardar accion en secuencia
-					child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
 
 					// Heuristica
+					child_clb_turnsr.heuristica = costeHeuristica(child_clb_turnsr, final);
+
+					// Guardar accion en secuencia
+					child_clb_turnsr.secuencia.push_back(act_CLB_TURN_SR);
 
 					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 					if (cerrados.find(child_clb_turnsr.st) == cerrados.end()){
@@ -2061,11 +2126,12 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 					// Generar hijo act_CLB_STOP si la ultima fue andar o girar
 					nodeN2 child_clb_stop= current_node;
 					child_clb_stop = apply2(act_CLB_STOP, current_node, mapa);
+
+					// Heuristica
+					child_clb_stop.heuristica = costeHeuristica(child_clb_stop, final);
 					
 					// Guardar accion en secuencia
 					child_clb_stop.secuencia.push_back(act_CLB_STOP);
-
-					// Heuristica
 
 					// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 					if (cerrados.find(child_clb_stop.st) == cerrados.end()){
@@ -2083,11 +2149,12 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				// Generar hijo actWALK
 				nodeN2 child_walk = current_node; 
 				child_walk = apply2(actWALK, current_node, mapa);
+
+				// Heuristica
+				child_walk.heuristica = costeHeuristica(child_walk, final);
 				
 				// Guardar la accion en secuencia
 				child_walk.secuencia.push_back(actWALK);
-
-				// Heuristica
 
 				if (cerrados.find(child_walk.st) == cerrados.end()){
 					
@@ -2101,11 +2168,12 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				// Generar hijo actRUN
 				nodeN2 child_run = current_node;
 				child_run = apply2(actRUN, current_node, mapa);
+
+				// Heuristica
+				child_run.heuristica = costeHeuristica(child_run, final);
 				
 				// Guardar accion en secuencia
 				child_run.secuencia.push_back(actRUN);
-
-				// Heuristica
 
 				if (cerrados.find(child_run.st) == cerrados.end()){
 					
@@ -2120,10 +2188,11 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				nodeN2 child_turnl = current_node; 
 				child_turnl = apply2(actTURN_L, current_node, mapa);
 
+				// Heuristica
+				child_turnl.heuristica = costeHeuristica(child_turnl, final);
+
 				// Guardar accion en secuencia
 				child_turnl.secuencia.push_back(actTURN_L);
-
-				// Heuristica
 
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_turnl.st) == cerrados.end()){
@@ -2134,11 +2203,12 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				// Generar hijo actTURN_SR
 				nodeN2 child_turnsr = current_node;
 				child_turnsr = apply2(actTURN_SR, current_node, mapa);
+
+				// Heuristica
+				child_turnsr.heuristica = costeHeuristica(child_turnsr, final);
 				
 				// Guardar accion en secuencia
 				child_turnsr.secuencia.push_back(actTURN_SR);
-
-				// Heuristica
 
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_turnsr.st) == cerrados.end()){
@@ -2154,10 +2224,11 @@ list<Action> AEstrellaSoloColaborador(const stateN2 &inicio, const ubicacion &fi
 				nodeN2 child_idle = current_node; 
 				child_idle = apply2(actIDLE, current_node, mapa);
 
+				// Heuristica
+				child_idle.heuristica = costeHeuristica(child_idle, final);
+
 				// Guardar accion en secuencia
 				child_idle.secuencia.push_back(actIDLE);
-
-				// Heuristica
 				
 				// Si no lo encuentra en cerrados el find devuelve end, por eso lo introduce en abiertos
 				if (cerrados.find(child_idle.st) == cerrados.end()){
