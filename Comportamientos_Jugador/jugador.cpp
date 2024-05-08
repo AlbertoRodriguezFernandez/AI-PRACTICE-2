@@ -1463,11 +1463,11 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		// CASOS DEL COLABORADOR (modificar el estado del colaborador, pero no el del jugador)
 		case act_CLB_WALK:    
 
-			st_result.st.ultimaOrdenColaborador = act_CLB_WALK;
+			sig_ubicacion = NextCasilla(st.st.colaborador);
 
-			sig_ubicacion = NextCasilla(st_result.st.colaborador);
-
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st_result.st.jugador.f and sig_ubicacion.c == st_result.st.jugador.c)) {
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.jugador.f and sig_ubicacion.c == st.st.jugador.c)) {
+				
+				st_result.st.ultimaOrdenColaborador = act_CLB_WALK;
 				
 				st_result.coste = actualizarCosteNodo(act_CLB_WALK, st_result, mapa);
 				
@@ -1514,12 +1514,12 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actWALK: 
 			
 			// Estado (ubicacion)
-			sig_ubicacion = NextCasilla(st_result.st.jugador);
-			sig_ubicacion2 = NextCasilla(st_result.st.colaborador);
+			sig_ubicacion = NextCasilla(st.st.jugador);
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st_result.st.colaborador.f and sig_ubicacion.c == st_result.st.colaborador.c)){
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
 					
-				if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st_result.st.jugador.f and sig_ubicacion2.c == st_result.st.jugador.c) or
+				if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == sig_ubicacion.f and sig_ubicacion2.c == sig_ubicacion.c) or
 				    st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or st_result.st.ultimaOrdenColaborador == act_CLB_STOP) {
 
 					// Coste
@@ -1552,16 +1552,16 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actRUN:
 			
 			// Estado (ubicacion)
-			sig_ubicacion = NextCasilla(st_result.st.jugador);
+			sig_ubicacion = NextCasilla(st.st.jugador);
 			
-			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st_result.st.colaborador.f and sig_ubicacion.c == st_result.st.colaborador.c)){
+			if (CasillaTransitable(sig_ubicacion, mapa) and !(sig_ubicacion.f == st.st.colaborador.f and sig_ubicacion.c == st.st.colaborador.c)){
 
 				sig_ubicacion2 = NextCasilla(sig_ubicacion);
-				sig_ubicacion3 = NextCasilla(st_result.st.colaborador);
+				sig_ubicacion3 = NextCasilla(st.st.colaborador);
 				
-				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st_result.st.colaborador.f and sig_ubicacion2.c == st_result.st.colaborador.c)){
+				if (CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.colaborador.f and sig_ubicacion2.c == st.st.colaborador.c)){
 					
-					if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion3, mapa) and !(sig_ubicacion3.f == st_result.st.jugador.f and sig_ubicacion3.c == st_result.st.jugador.c) or
+					if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion3, mapa) and !(sig_ubicacion3.f == sig_ubicacion2.f and sig_ubicacion3.c == sig_ubicacion2.c) or
 						st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or st_result.st.ultimaOrdenColaborador == act_CLB_STOP) {
 
 						// Coste
@@ -1595,9 +1595,9 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actTURN_L: // En el caso de los giros solo tendremos que cambiar la orientacion del jugador
 			
 			// Actualizar nodo jugador gira izquierda
-			sig_ubicacion2 = NextCasilla(st_result.st.colaborador);
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st_result.st.jugador.f and sig_ubicacion2.c == st_result.st.jugador.c) or
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
 				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or st_result.st.ultimaOrdenColaborador == act_CLB_STOP) {
 
 				// Coste
@@ -1616,9 +1616,9 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actTURN_SR:
 
 			// Actualizar nodo jugador gira derecha
-			sig_ubicacion2 = NextCasilla(st_result.st.colaborador);
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st_result.st.jugador.f and sig_ubicacion2.c == st_result.st.jugador.c) or
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
 				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or st_result.st.ultimaOrdenColaborador == act_CLB_STOP) {
 				
 				// Coste
@@ -1638,9 +1638,9 @@ nodeN2 apply2(const Action &a, const nodeN2 &st, const vector<vector<unsigned ch
 		case actIDLE:
 
 			// Actualizar nodo jugador no hace nada
-			sig_ubicacion2 = NextCasilla(st_result.st.colaborador);
+			sig_ubicacion2 = NextCasilla(st.st.colaborador);
 
-			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st_result.st.jugador.f and sig_ubicacion2.c == st_result.st.jugador.c) or
+			if (st_result.st.ultimaOrdenColaborador == act_CLB_WALK and CasillaTransitable(sig_ubicacion2, mapa) and !(sig_ubicacion2.f == st.st.jugador.f and sig_ubicacion2.c == st.st.jugador.c) or
 				st_result.st.ultimaOrdenColaborador == act_CLB_TURN_SR or st_result.st.ultimaOrdenColaborador == act_CLB_STOP) {
 				
 				// Coste
